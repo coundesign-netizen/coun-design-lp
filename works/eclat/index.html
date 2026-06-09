@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pâtisserie éclat | パティスリー エクラ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+  /* ==============================================
+     RESET
+  =============================================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --cream:   #f8f5ef;
+    --cream2:  #eeeae1;
+    --dark:    #17140d;
+    --gold:    #c4a46b;
+    --gold-l:  #d8bc8c;
+    --gold-d:  #8c7248;
+    --muted:   #8a8278;
+    --faint:   #c4bdb4;
+    --border:  rgba(196,164,107,0.18);
+    --serif:   'Cormorant Garamond', 'Times New Roman', serif;
+    --ui:      'DM Sans', 'Noto Sans JP', sans-serif;
+    --jp:      'Noto Sans JP', sans-serif;
+  }
+
+  body {
+    font-family: var(--jp);
+    background: var(--cream);
+    color: var(--dark);
+    font-weight: 300;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* ==============================================
+     CURSOR
+  =============================================== */
+  .c-dot, .c-ring {
+    position: fixed;
+    top: 0; left: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+    opacity: 0;
+  }
+  .c-dot {
+    width: 5px; height: 5px;
+    background: var(--gold);
+    margin: -2.5px 0 0 -2.5px;
+    transition: opacity 0.3s;
+  }
+  .c-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(196,164,107,0.6);
+    margin: -18px 0 0 -18px;
+    transition: width 0.3s, height 0.3s, margin 0.3s, border-color 0.3s, opacity 0.3s;
+  }
+  .c-ring.hover {
+    width: 56px; height: 56px;
+    margin: -28px 0 0 -28px;
+    border-color: var(--gold);
+  }
+
+  /* ==============================================
+     PAGE INTRO
+  =============================================== */
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .intro__name {
+    font-family: var(--serif);
+    font-size: clamp(20px, 3vw, 36px);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.0);
+    transition: color 0.6s ease 0.3s;
+  }
+  .intro.running .intro__name { color: rgba(255,255,255,0.65); }
+  .intro__line {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--gold);
+    width: 0%;
+    transition: width 1.0s cubic-bezier(0.77,0,0.18,1) 0.1s;
+  }
+  .intro.running .intro__line { width: 100%; }
+  .intro.done {
+    transform: translateY(-100%);
+    transition: transform 0.9s cubic-bezier(0.77,0,0.18,1) 0.1s;
+  }
+
+  /* ==============================================
+     UTILITIES
+  =============================================== */
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 52px; }
+
+  .u-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--ui);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .u-label::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .u-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 5.5vw, 72px);
+    font-weight: 300;
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+  }
+  .u-title i { font-style: italic; color: var(--gold-d); }
+
+  /* Reveal animation */
+  .reveal {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 1.0s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible { clip-path: inset(0 0 0% 0); }
+
+  .fadeup {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .fadeup.visible { opacity: 1; transform: translateY(0); }
+  .d1 { transition-delay: 0.1s; }
+  .d2 { transition-delay: 0.22s; }
+  .d3 { transition-delay: 0.36s; }
+  .d4 { transition-delay: 0.52s; }
+  .d5 { transition-delay: 0.68s; }
+
+  /* img placeholder */
+  .ph {
+    background: var(--cream2);
+    position: relative;
+    overflow: hidden;
+  }
+  .ph::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  }
+
+  /* ==============================================
+     HEADER
+  =============================================== */
+  .header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: padding 0.5s, background 0.5s, border-color 0.5s;
+    border-bottom: 1px solid transparent;
+  }
+  .header.scrolled {
+    padding: 18px 52px;
+    background: rgba(248,245,239,0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-color: var(--border);
+  }
+
+  .header__logo {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    color: var(--dark);
+    text-decoration: none;
+  }
+  .header__logo em { font-style: italic; }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    list-style: none;
+  }
+  .header__nav a {
+    font-family: var(--ui);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .header__nav a:hover { color: var(--dark); }
+
+  .header__cta {
+    font-family: var(--ui);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--dark);
+    padding-bottom: 2px;
+    transition: color 0.25s, border-color 0.25s;
+  }
+  .header__cta:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ==============================================
+     HERO
+  =============================================== */
+  .hero {
+    position: relative;
+    height: 100svh;
+    min-height: 700px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+  .hero__bg .ph {
+    width: 100%; height: 115%;
+    top: -7.5%;
+    background: linear-gradient(160deg, #d8d0c4 0%, #c4b8a8 40%, #b0a090 100%);
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(23,20,13,0.72) 0%,
+      rgba(23,20,13,0.28) 45%,
+      rgba(23,20,13,0.04) 100%
+    );
+  }
+
+  .hero__watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -44%);
+    font-family: var(--serif);
+    font-size: clamp(100px, 18vw, 240px);
+    font-weight: 300;
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.07);
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    padding: 0 80px 72px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: flex-end;
+    gap: 0 60px;
+  }
+
+  .hero__left {}
+
+  .hero__eyebrow {
+    font-family: var(--ui);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 20px;
+    opacity: 0;
+  }
+
+  .hero__title {
+    font-family: var(--serif);
+    font-size: clamp(52px, 8.5vw, 112px);
+    font-weight: 300;
+    line-height: 0.98;
+    letter-spacing: 0.03em;
+    color: #fff;
+    margin-bottom: 28px;
+    opacity: 0;
+  }
+  .hero__title em {
+    display: block;
+    font-style: italic;
+    color: var(--gold-l);
+  }
+
+  .hero__tag {
+    font-family: var(--jp);
+    font-size: clamp(13px, 1.4vw, 16px);
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+    border-left: 1px solid rgba(196,164,107,0.5);
+    padding-left: 20px;
+    opacity: 0;
+  }
+
+  .hero__right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+  }
+  .hero__scroll-label {
+    writing-mode: vertical-rl;
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .hero__scroll-line {
+    width: 1px;
+    height: 64px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.35; }
+    50% { opacity: 0.8; }
+  }
+
+  /* ==============================================
+     MARQUEE
+  =============================================== */
+  .marquee {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--cream);
+  }
+  .marquee__track {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 32s linear infinite;
+  }
+  .marquee__track span {
+    font-family: var(--serif);
+    font-size: 12px;
+    font-style: italic;
+    letter-spacing: 0.22em;
+    color: var(--faint);
+    padding: 16px 44px;
+  }
+  .marquee__track b {
+    color: var(--gold);
+    font-weight: 300;
+    font-style: normal;
+    padding: 16px 4px;
+  }
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ==============================================
+     STORY
+  =============================================== */
+  .story {
+    padding: 0;
+    position: relative;
+    display: grid;
+    grid-template-columns: 50% 1fr;
+    min-height: 88vh;
+  }
+
+  .story__visual {
+    position: relative;
+    overflow: hidden;
+  }
+  .story__img-main {
+    position: absolute;
+    inset: 0;
+  }
+  .story__img-main .ph {
+    width: 100%; height: 100%;
+    background: linear-gradient(150deg, #ddd5c8 0%, #c8bfb0 100%);
+    transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
+  }
+  .story__visual:hover .story__img-main .ph { transform: scale(1.03); }
+
+  .story__img-sub { display: none; }
+  .story__year    { display: none; }
+
+  .story__text {
+    padding: 100px 80px 100px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fff;
+  }
+  .story__text .u-label { margin-bottom: 32px; }
+
+  .story__title {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.4vw, 34px);
+    font-weight: 300;
+    line-height: 1.55;
+    letter-spacing: 0.04em;
+    color: var(--dark);
+    margin-bottom: 40px;
+  }
+  .story__title i { font-style: italic; color: var(--dark); }
+
+  .story__rule {
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .story__body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 2.2;
+    letter-spacing: 0.07em;
+  }
+  .story__body p + p { margin-top: 20px; }
+
+  .story__sig {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .story__sig-name {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .story__sig-role {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--faint);
+    line-height: 1.7;
+  }
+
+  /* ==============================================
+     SIGNATURE
+  =============================================== */
+  .signature {
+    padding: 140px 0;
+    background: var(--cream2);
+  }
+
+  .signature__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 72px;
+  }
+  .signature__head .u-label { margin-bottom: 16px; }
+
+  .signature__link {
+    font-family: var(--ui);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: color 0.25s;
+  }
+  .signature__link::after {
+    content: '';
+    display: block;
+    width: 32px; height: 1px;
+    background: currentColor;
+    transition: width 0.3s;
+  }
+  .signature__link:hover { color: var(--dark); }
+  .signature__link:hover::after { width: 52px; }
+
+  .signature__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+
+  .signature__item {
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .signature__item-img {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    position: relative;
+  }
+  .signature__item-img .ph {
+    width: 100%; height: 100%;
+    transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .signature__item:nth-child(1) .ph { background: linear-gradient(145deg, #e0d6ca, #ccc0b0); }
+  .signature__item:nth-child(2) .ph { background: linear-gradient(145deg, #ddd8d0, #c8c0b4); }
+  .signature__item:nth-child(3) .ph { background: linear-gradient(145deg, #e0dcd2, #cccabc); }
+  .signature__item:hover .signature__item-img .ph { transform: scale(1.05); }
+
+  .signature__item-hover {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(23,20,13,0.65) 0%, rgba(23,20,13,0.0) 50%);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .signature__item:hover .signature__item-hover { opacity: 1; }
+
+  .signature__item-info {
+    padding: 24px 24px 32px;
+    background: var(--cream);
+    border-top: 1px solid var(--border);
+  }
+  .signature__item-num {
+    font-family: var(--serif);
+    font-size: 11px;
+    font-style: italic;
+    color: var(--faint);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+  .signature__item-name {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .signature__item-name i { font-style: italic; color: var(--gold-d); }
+  .signature__item-desc {
+    font-size: 12px;
+    color: var(--faint);
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+  .signature__item-price {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-style: italic;
+    color: var(--gold);
+    margin-top: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ==============================================
+     DARK CONCEPT
+  =============================================== */
+  .concept {
+    padding: 160px 0;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .concept__bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif);
+    font-size: clamp(80px, 14vw, 200px);
+    font-weight: 300;
+    font-style: italic;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(196,164,107,0.08);
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .concept__inner { position: relative; z-index: 1; }
+
+  .concept__rule {
+    width: 1px;
+    height: 56px;
+    background: rgba(196,164,107,0.3);
+    margin: 0 auto 52px;
+  }
+
+  .concept__quote {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4.5vw, 58px);
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    max-width: 820px;
+    margin: 0 auto 36px;
+  }
+  .concept__quote em { color: var(--gold-l); }
+
+  .concept__sub {
+    font-family: var(--jp);
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.28);
+    line-height: 2;
+  }
+
+  .concept__rule-b {
+    width: 1px;
+    height: 56px;
+    background: rgba(196,164,107,0.3);
+    margin: 52px auto 0;
+  }
+
+  /* ==============================================
+     SEASONAL
+  =============================================== */
+  .seasonal {
+    padding: 160px 0;
+  }
+
+  .seasonal__head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    margin-bottom: 80px;
+    gap: 40px;
+  }
+  .seasonal__head-left .u-label { margin-bottom: 20px; }
+  .seasonal__head-right {
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    line-height: 1.9;
+    padding-bottom: 8px;
+  }
+
+  .seasonal__layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 3px;
+  }
+
+  .seasonal__big {
+    grid-row: span 2;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .seasonal__big .ph {
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    background: linear-gradient(150deg, #e4ddd4 0%, #d0c4b8 100%);
+    transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .seasonal__big:hover .ph { transform: scale(1.04); }
+
+  .seasonal__big-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(23,20,13,0.6) 0%, transparent 55%);
+  }
+  .seasonal__big-info {
+    position: absolute;
+    bottom: 36px;
+    left: 36px;
+    right: 36px;
+    color: #fff;
+  }
+  .seasonal__big-tag {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-l);
+    margin-bottom: 10px;
+  }
+  .seasonal__big-name {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .seasonal__big-name i { font-style: italic; color: var(--gold-l); }
+  .seasonal__big-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.06em;
+    line-height: 1.8;
+  }
+  .seasonal__big-price {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-style: italic;
+    color: var(--gold-l);
+    margin-top: 12px;
+  }
+
+  .seasonal__small {
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .seasonal__small .ph {
+    width: 100%;
+    aspect-ratio: 16/10;
+    transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .seasonal__small:nth-child(2) .ph { background: linear-gradient(145deg, #dde0d8, #c8d0c0); }
+  .seasonal__small:nth-child(3) .ph { background: linear-gradient(145deg, #ddd8e0, #c8bcd0); }
+  .seasonal__small:nth-child(4) .ph { background: linear-gradient(145deg, #e0e0d4, #ced0b8); }
+  .seasonal__small:hover .ph { transform: scale(1.04); }
+
+  .seasonal__small-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(23,20,13,0.55) 0%, transparent 55%);
+  }
+  .seasonal__small-info {
+    position: absolute;
+    bottom: 20px;
+    left: 24px;
+    right: 24px;
+    color: #fff;
+  }
+  .seasonal__small-name {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 300;
+    margin-bottom: 3px;
+  }
+  .seasonal__small-name i { font-style: italic; color: var(--gold-l); }
+  .seasonal__small-price {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--gold-l);
+  }
+
+  /* ==============================================
+     ATELIER
+  =============================================== */
+  .atelier {
+    padding: 140px 0;
+    background: var(--cream2);
+  }
+
+  .atelier__head {
+    text-align: center;
+    margin-bottom: 100px;
+  }
+  .atelier__head .u-label {
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .atelier__head .u-label::before { display: none; }
+
+  .atelier__steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .atelier__step {
+    border-left: 1px solid var(--border);
+    padding: 0 36px 48px;
+    position: relative;
+  }
+  .atelier__step:last-child { border-right: 1px solid var(--border); }
+
+  .atelier__step-img {
+    aspect-ratio: 1;
+    overflow: hidden;
+    margin: 0 -36px 32px;
+  }
+  .atelier__step-img .ph {
+    width: 100%; height: 100%;
+    transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
+  }
+  .atelier__step:nth-child(1) .ph { background: linear-gradient(155deg, #ddd8d0, #cac0b4); }
+  .atelier__step:nth-child(2) .ph { background: linear-gradient(155deg, #d8d4cc, #c4beb4); }
+  .atelier__step:nth-child(3) .ph { background: linear-gradient(155deg, #dcdad2, #c8c4b8); }
+  .atelier__step:nth-child(4) .ph { background: linear-gradient(155deg, #d8d4cc, #c4beb8); }
+  .atelier__step:hover .ph { transform: scale(1.04); }
+
+  .atelier__step-num {
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .atelier__step-title {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .atelier__step-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.95;
+    letter-spacing: 0.05em;
+  }
+
+  /* ==============================================
+     FULLWIDTH BAND
+  =============================================== */
+  .band {
+    position: relative;
+    height: 56vh;
+    min-height: 380px;
+    overflow: hidden;
+  }
+  .band .ph {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #ccc4b8 0%, #b8ac9c 40%, #a89888 100%);
+    will-change: transform;
+  }
+  .band__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(23,20,13,0.32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .band__text {
+    text-align: center;
+    color: #fff;
+  }
+  .band__text p {
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 54px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+  }
+  .band__text p em { color: var(--gold-l); }
+  .band__text span {
+    display: block;
+    font-family: var(--ui);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-top: 16px;
+  }
+
+  /* ==============================================
+     RESERVE
+  =============================================== */
+  .reserve {
+    padding: 160px 0;
+  }
+
+  .reserve__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 100px;
+    align-items: start;
+  }
+
+  .reserve__left .u-label { margin-bottom: 24px; }
+  .reserve__left .u-title { margin-bottom: 40px; }
+
+  .reserve__desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 2.1;
+    letter-spacing: 0.06em;
+    margin-bottom: 48px;
+  }
+
+  .reserve__btn {
+    display: inline-block;
+    font-family: var(--ui);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--dark);
+    padding: 20px 56px;
+    text-decoration: none;
+    transition: background 0.3s, letter-spacing 0.3s;
+  }
+  .reserve__btn:hover {
+    background: var(--gold-d);
+    letter-spacing: 0.38em;
+  }
+
+  .reserve__right {}
+
+  .reserve__table {
+    border-top: 1px solid var(--border);
+    margin-bottom: 36px;
+  }
+  .reserve__row {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+  }
+  .reserve__row-label {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding-top: 3px;
+  }
+  .reserve__row-val {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.85;
+    letter-spacing: 0.06em;
+  }
+
+  .reserve__map {
+    aspect-ratio: 4/3;
+    background: var(--cream2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reserve__map span {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ==============================================
+     FOOTER
+  =============================================== */
+  .footer {
+    background: var(--dark);
+    padding: 88px 0 52px;
+  }
+
+  .footer__top {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 60px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 40px;
+  }
+
+  .footer__brand-name {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 10px;
+  }
+  .footer__brand-sub {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    margin-bottom: 28px;
+  }
+  .footer__brand-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    line-height: 2;
+    letter-spacing: 0.06em;
+  }
+
+  .footer__col-title {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+  .footer__nav {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .footer__nav a {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 300;
+    color: rgba(255,255,255,0.38);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.25s;
+  }
+  .footer__nav a:hover { color: rgba(255,255,255,0.75); }
+
+  .footer__info {
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    line-height: 2;
+    letter-spacing: 0.06em;
+    margin-bottom: 28px;
+  }
+
+  .footer__sns {
+    display: flex;
+    gap: 12px;
+  }
+  .footer__sns a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.3);
+    text-decoration: none;
+    transition: border-color 0.25s, color 0.25s;
+  }
+  .footer__sns a:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer__copy {
+    font-family: var(--ui);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.18);
+  }
+  .footer__made {
+    font-family: var(--serif);
+    font-size: 12px;
+    font-style: italic;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 0.08em;
+  }
+
+  /* ==============================================
+     RESPONSIVE
+  =============================================== */
+  @media (max-width: 960px) {
+    .container { padding: 0 32px; }
+    .header { padding: 20px 32px; }
+    .header__nav { display: none; }
+    .header.scrolled { padding: 14px 32px; }
+
+    .hero__content { padding: 0 32px 56px; grid-template-columns: 1fr; }
+    .hero__right { display: none; }
+
+    .story { grid-template-columns: 1fr; min-height: auto; }
+    .story__visual { height: 60vw; min-height: 320px; position: relative; }
+    .story__text { padding: 64px 32px; }
+
+    .signature__grid { grid-template-columns: repeat(2, 1fr); }
+
+    .seasonal__layout {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+    .seasonal__big { grid-row: span 1; }
+    .seasonal__big .ph { min-height: 340px; }
+    .seasonal__head { grid-template-columns: 1fr; }
+
+    .atelier__steps { grid-template-columns: repeat(2, 1fr); }
+    .atelier__step:nth-child(2) { border-left: none; }
+    .atelier__step:nth-child(3) { border-top: 1px solid var(--border); }
+    .atelier__step:nth-child(4) { border-top: 1px solid var(--border); border-left: none; border-right: none; }
+    .atelier__step:last-child { border-right: none; }
+
+    .reserve__inner { grid-template-columns: 1fr; gap: 64px; }
+
+    .footer__top { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .hero__title { font-size: clamp(44px, 13vw, 72px); }
+    .signature__grid { grid-template-columns: 1fr; }
+    .atelier__steps { grid-template-columns: 1fr; }
+    .atelier__step { border: none; border-top: 1px solid var(--border); border-right: none; }
+    .atelier__step:last-child { border-right: none; }
+    .footer__top { grid-template-columns: 1fr; }
+    .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- ============================================
+     Cursor
+============================================ -->
+<div class="c-dot" id="cDot"></div>
+<div class="c-ring" id="cRing"></div>
+
+<!-- ============================================
+     Intro
+============================================ -->
+<div class="intro" id="intro">
+  <p class="intro__name">pâtisserie éclat</p>
+  <div class="intro__line"></div>
+</div>
+
+<!-- ============================================
+     Header
+============================================ -->
+<header class="header" id="header">
+  <a href="#" class="header__logo">pâtisserie <em>éclat</em></a>
+  <nav>
+    <ul class="header__nav">
+      <li><a href="#story">Story</a></li>
+      <li><a href="#signature">Signature</a></li>
+      <li><a href="#menu">Seasonal</a></li>
+      <li><a href="#atelier">Atelier</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+    </ul>
+  </nav>
+  <a href="#reserve" class="header__cta">Reservation</a>
+</header>
+
+<!-- ============================================
+     Hero
+============================================ -->
+<section class="hero" id="hero">
+  <div class="hero__bg" id="heroBg">
+    <div class="ph" id="heroBgPh"><img src="images/hero-bg.jpg" alt="パティスリー エクラ 店内"></div>
+  </div>
+  <div class="hero__overlay"></div>
+  <p class="hero__watermark" aria-hidden="true">éclat</p>
+
+  <div class="hero__content">
+    <div class="hero__left">
+      <p class="hero__eyebrow" id="heroEyebrow">Paris · Tokyo · Since 2018</p>
+      <h1 class="hero__title" id="heroTitle">
+        pâtisserie<br><em>éclat</em>
+      </h1>
+      <p class="hero__tag" id="heroTag">
+        光のように輝く、一瞬の喜びを。<br>
+        フランスの技法と日本の素材が出会う場所。
+      </p>
+    </div>
+    <div class="hero__right" id="heroRight">
+      <p class="hero__scroll-label">Scroll</p>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Marquee
+============================================ -->
+<div class="marquee">
+  <div class="marquee__track">
+    <span>Pâtisserie Française</span><b>✦</b>
+    <span>Artisan Chocolat</span><b>✦</b>
+    <span>Collection Saisonnière</span><b>✦</b>
+    <span>Sur Commande</span><b>✦</b>
+    <span>Tokyo · Atelier</span><b>✦</b>
+    <span>Fait à la main</span><b>✦</b>
+    <span>Pâtisserie Française</span><b>✦</b>
+    <span>Artisan Chocolat</span><b>✦</b>
+    <span>Collection Saisonnière</span><b>✦</b>
+    <span>Sur Commande</span><b>✦</b>
+    <span>Tokyo · Atelier</span><b>✦</b>
+    <span>Fait à la main</span><b>✦</b>
+  </div>
+</div>
+
+<!-- ============================================
+     Story
+============================================ -->
+<section class="story" id="story">
+  <div class="story__visual">
+    <div class="story__img-main">
+      <div class="ph"><img src="images/story-main.jpg" alt="シェフの手元" loading="lazy"></div>
+    </div>
+  </div>
+  <div class="story__text">
+    <p class="u-label fadeup">Notre Histoire</p>
+    <h2 class="story__title fadeup d1">
+      素材の声に、<br>
+      <i>耳を澄ます。</i>
+    </h2>
+    <div class="story__rule fadeup d2"></div>
+    <div class="story__body fadeup d3">
+      <p>
+        パリの名門パティスリーで修業を重ねたシェフが、
+        日本の四季折々の素材と出会い、
+        2018年に東京の片隅に小さなアトリエを開きました。
+      </p>
+      <p>
+        フランス伝統の技法を礎に、北海道のフレッシュバターと
+        国産小麦の風味を最大限に引き出した菓子は、
+        口に含んだ瞬間に「éclat（輝き）」のように
+        広がる幸福感を届けます。
+      </p>
+    </div>
+    <div class="story__sig fadeup d4">
+      <p class="story__sig-name">Jean-Pierre Morimoto</p>
+      <p class="story__sig-role">Chef Pâtissier — pâtisserie éclat</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Signature
+============================================ -->
+<section class="signature" id="signature">
+  <div class="container">
+    <div class="signature__head fadeup">
+      <div>
+        <p class="u-label">Nos Signatures</p>
+        <h2 class="u-title" style="margin-top:16px;">
+          看板菓子、<i>三選。</i>
+        </h2>
+      </div>
+      <a href="#" class="signature__link">Full Menu</a>
+    </div>
+  </div>
+  <div style="padding: 0 52px; max-width: 1120px; margin: 0 auto;">
+    <div class="signature__grid">
+      <div class="signature__item fadeup">
+        <div class="signature__item-img">
+          <div class="ph"><img src="images/signature-01.jpg" alt="エクレア ヴァニーユ" loading="lazy"></div>
+          <div class="signature__item-hover"></div>
+        </div>
+        <div class="signature__item-info">
+          <p class="signature__item-num">No. 01</p>
+          <h3 class="signature__item-name"><i>Éclair</i> Vanille</h3>
+          <p class="signature__item-desc">
+            タヒチ産バニラのクレームと<br>
+            ミルクチョコレートのグラサージュ
+          </p>
+          <p class="signature__item-price">¥ 680</p>
+        </div>
+      </div>
+      <div class="signature__item fadeup d1">
+        <div class="signature__item-img">
+          <div class="ph"><img src="images/signature-02.jpg" alt="タルト シトロン" loading="lazy"></div>
+          <div class="signature__item-hover"></div>
+        </div>
+        <div class="signature__item-info">
+          <p class="signature__item-num">No. 02</p>
+          <h3 class="signature__item-name"><i>Tarte</i> Citron</h3>
+          <p class="signature__item-desc">
+            レモンクリームと<br>
+            イタリアンメレンゲの軽やかな調和
+          </p>
+          <p class="signature__item-price">¥ 780</p>
+        </div>
+      </div>
+      <div class="signature__item fadeup d2">
+        <div class="signature__item-img">
+          <div class="ph"><img src="images/signature-03.jpg" alt="ミルフィーユ エクラ" loading="lazy"></div>
+          <div class="signature__item-hover"></div>
+        </div>
+        <div class="signature__item-info">
+          <p class="signature__item-num">No. 03</p>
+          <h3 class="signature__item-name"><i>Mille-Feuille</i> Éclat</h3>
+          <p class="signature__item-desc">
+            薄焼きフィユタージュと<br>
+            ヴァニーユ・ムスリーヌクリーム
+          </p>
+          <p class="signature__item-price">¥ 880</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Concept (Dark)
+============================================ -->
+<section class="concept">
+  <p class="concept__bg-text" aria-hidden="true">éclat</p>
+  <div class="container">
+    <div class="concept__inner">
+      <div class="concept__rule fadeup"></div>
+      <p class="concept__quote fadeup d1">
+        "Every petit gâteau is a small<br>
+        <em>moment of light."</em>
+      </p>
+      <p class="concept__sub fadeup d2">
+        菓子はひとつの物語です。<br>
+        素材が語る季節、シェフが宿す技、そしてあなたが感じる一瞬の幸福。<br>
+        éclat はその輝きを、毎朝追い続けます。
+      </p>
+      <div class="concept__rule-b fadeup d3"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Seasonal
+============================================ -->
+<section class="seasonal" id="menu">
+  <div class="container">
+    <div class="seasonal__head fadeup">
+      <div class="seasonal__head-left">
+        <p class="u-label">Collection Saisonnière</p>
+        <h2 class="u-title" style="margin-top:16px;">季節の<i>菓子</i></h2>
+      </div>
+      <p class="seasonal__head-right">
+        四季折々の素材を用いた限定コレクション。<br>
+        季節とともに移ろう、エクラの表情をお楽しみください。
+      </p>
+    </div>
+    <div class="seasonal__layout">
+      <div class="seasonal__big fadeup">
+        <div class="ph"><img src="images/seasonal-01.jpg" alt="フレジエ 苺" loading="lazy"></div>
+        <div class="seasonal__big-overlay"></div>
+        <div class="seasonal__big-info">
+          <p class="seasonal__big-tag">Spring Limited</p>
+          <h3 class="seasonal__big-name"><i>Fraisier</i> 苺</h3>
+          <p class="seasonal__big-desc">
+            熊本産あまおうと<br>
+            ピスタチオムスリーヌの春の一皿
+          </p>
+          <p class="seasonal__big-price">¥ 820</p>
+        </div>
+      </div>
+      <div class="seasonal__small fadeup d1">
+        <div class="ph"><img src="images/seasonal-02.jpg" alt="モンブラン 和栗" loading="lazy"></div>
+        <div class="seasonal__small-overlay"></div>
+        <div class="seasonal__small-info">
+          <h3 class="seasonal__small-name"><i>Mont Blanc</i> 和栗</h3>
+          <p class="seasonal__small-price">¥ 950</p>
+        </div>
+      </div>
+      <div class="seasonal__small fadeup d2">
+        <div class="ph"><img src="images/seasonal-03.jpg" alt="パリブレスト" loading="lazy"></div>
+        <div class="seasonal__small-overlay"></div>
+        <div class="seasonal__small-info">
+          <h3 class="seasonal__small-name"><i>Paris-Brest</i></h3>
+          <p class="seasonal__small-price">¥ 760</p>
+        </div>
+      </div>
+      <div class="seasonal__small fadeup d3">
+        <div class="ph"><img src="images/seasonal-04.jpg" alt="ショコラ ノワール" loading="lazy"></div>
+        <div class="seasonal__small-overlay"></div>
+        <div class="seasonal__small-info">
+          <h3 class="seasonal__small-name"><i>Chocolat</i> Noir</h3>
+          <p class="seasonal__small-price">¥ 720</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Atelier
+============================================ -->
+<section class="atelier" id="atelier">
+  <div class="container">
+    <div class="atelier__head fadeup">
+      <p class="u-label">L'Atelier</p>
+      <h2 class="u-title" style="margin-top:16px;">菓子が<i>生まれるまで</i></h2>
+    </div>
+    <div class="atelier__steps">
+      <div class="atelier__step fadeup">
+        <div class="atelier__step-img">
+          <div class="ph"><img src="images/process-01.jpg" alt="素材選び" loading="lazy"></div>
+        </div>
+        <p class="atelier__step-num">01</p>
+        <h3 class="atelier__step-title">Matière première</h3>
+        <p class="atelier__step-desc">
+          国内外から厳選した素材のみを使用。
+          鮮度と品質を最優先に毎朝仕入れます。
+        </p>
+      </div>
+      <div class="atelier__step fadeup d1">
+        <div class="atelier__step-img">
+          <div class="ph"><img src="images/process-02.jpg" alt="生地の仕込み" loading="lazy"></div>
+        </div>
+        <p class="atelier__step-num">02</p>
+        <h3 class="atelier__step-title">Préparation</h3>
+        <p class="atelier__step-desc">
+          早朝4時から仕込みを開始。
+          生地はすべて手作業で丁寧に仕上げます。
+        </p>
+      </div>
+      <div class="atelier__step fadeup d2">
+        <div class="atelier__step-img">
+          <div class="ph"><img src="images/process-03.jpg" alt="仕上げ" loading="lazy"></div>
+        </div>
+        <p class="atelier__step-num">03</p>
+        <h3 class="atelier__step-title">Finition</h3>
+        <p class="atelier__step-desc">
+          デコレーションまでシェフの目が行き届いた
+          ひとつひとつの仕上がりを確認します。
+        </p>
+      </div>
+      <div class="atelier__step fadeup d3">
+        <div class="atelier__step-img">
+          <div class="ph"><img src="images/process-04.jpg" alt="ショーケース" loading="lazy"></div>
+        </div>
+        <p class="atelier__step-num">04</p>
+        <h3 class="atelier__step-title">Présentation</h3>
+        <p class="atelier__step-desc">
+          開店直前にショーケースへ。
+          作りたての輝きをそのままお届けします。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Band
+============================================ -->
+<div class="band">
+  <div class="ph" id="bandPh"><img src="images/atelier-wide.jpg" alt="アトリエ" loading="lazy"></div>
+  <div class="band__overlay">
+    <div class="band__text fadeup">
+      <p>"Fait à la main,<br><em>avec amour."</em></p>
+      <span>手仕事と愛情で、毎朝作りたて</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     Reserve
+============================================ -->
+<section class="reserve" id="reserve">
+  <div class="container">
+    <div class="reserve__inner">
+      <div class="reserve__left">
+        <p class="u-label fadeup">Réservation & Accès</p>
+        <h2 class="u-title fadeup d1" style="font-size: clamp(26px, 3vw, 42px); white-space: nowrap;">
+          ご予約・<i>アクセス</i>
+        </h2>
+        <p class="reserve__desc fadeup d2">
+          ホールケーキや記念日のお菓子は、
+          3日前までのご予約をお願いしております。
+          お気軽にお電話またはオンラインフォームにて
+          ご連絡ください。
+        </p>
+        <a href="#" class="reserve__btn fadeup d3">Online Reservation</a>
+      </div>
+      <div class="reserve__right fadeup d2">
+        <div class="reserve__table">
+          <div class="reserve__row">
+            <p class="reserve__row-label">Address</p>
+            <p class="reserve__row-val">〒150-0001<br>東京都渋谷区神宮前X-XX-XX</p>
+          </div>
+          <div class="reserve__row">
+            <p class="reserve__row-label">Hours</p>
+            <p class="reserve__row-val">11:00 – 19:00<br>定休日：火曜・水曜</p>
+          </div>
+          <div class="reserve__row">
+            <p class="reserve__row-label">Tel</p>
+            <p class="reserve__row-val">03-XXXX-XXXX</p>
+          </div>
+          <div class="reserve__row">
+            <p class="reserve__row-label">Access</p>
+            <p class="reserve__row-val">表参道駅 A2出口より徒歩5分</p>
+          </div>
+        </div>
+        <div class="reserve__map">
+          <span>Google Map</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Footer
+============================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div>
+        <p class="footer__brand-name">pâtisserie éclat</p>
+        <p class="footer__brand-sub">パティスリー エクラ</p>
+        <p class="footer__brand-desc">
+          フランスの技法と日本の素材が出会う場所。<br>
+          毎朝、光のような菓子を作りたてでお届けします。
+        </p>
+      </div>
+      <div>
+        <p class="footer__col-title">Navigation</p>
+        <ul class="footer__nav">
+          <li><a href="#story">Notre Histoire</a></li>
+          <li><a href="#signature">Nos Signatures</a></li>
+          <li><a href="#menu">Collection Saisonnière</a></li>
+          <li><a href="#atelier">L'Atelier</a></li>
+          <li><a href="#reserve">Réservation</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer__col-title">Contact</p>
+        <p class="footer__info">
+          03-XXXX-XXXX<br>
+          11:00 – 17:00（火・水定休）<br>
+          〒150-0001 東京都渋谷区神宮前
+        </p>
+        <p class="footer__col-title">Follow</p>
+        <div class="footer__sns">
+          <a href="#" aria-label="Instagram">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+          <a href="#" aria-label="LINE">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5C21 6.8 17 3 12 3S3 6.8 3 11.5c0 4.3 3.8 7.9 8.9 8.4l.6 1.6 2.8-1.8c.1 0 .2-.1.3-.1 3.1-.7 5.4-3.2 5.4-6.1z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2024 pâtisserie éclat. All rights reserved.</p>
+      <p class="footer__made">Fait avec amour à Tokyo.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* Custom Cursor */
+const dot  = document.getElementById('cDot');
+const ring = document.getElementById('cRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+let cursorReady = false;
+document.addEventListener('mousemove', e => {
+  if (!cursorReady) {
+    dot.style.opacity = '1';
+    ring.style.opacity = '1';
+    cursorReady = true;
+  }
+  mx = e.clientX; my = e.clientY;
+  dot.style.transform = `translate(${mx}px,${my}px)`;
+});
+
+(function cursorLoop() {
+  rx += (mx - rx) * 0.1;
+  ry += (my - ry) * 0.1;
+  ring.style.transform = `translate(${rx}px,${ry}px)`;
+  requestAnimationFrame(cursorLoop);
+})();
+
+document.querySelectorAll('a,button,.signature__item,.seasonal__big,.seasonal__small').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+});
+
+/* Intro animation */
+const intro = document.getElementById('intro');
+intro.classList.add('running');
+setTimeout(() => {
+  intro.classList.add('done');
+  setTimeout(() => intro.remove(), 1000);
+  /* Hero reveal */
+  const ORDER = [
+    { el: document.getElementById('heroEyebrow'), delay: 0 },
+    { el: document.getElementById('heroTitle'),   delay: 180 },
+    { el: document.getElementById('heroTag'),     delay: 360 },
+    { el: document.getElementById('heroRight'),   delay: 540 },
+  ];
+  ORDER.forEach(({ el, delay }) => {
+    setTimeout(() => {
+      el.style.transition = 'opacity 1s ease, transform 1s cubic-bezier(0.22,1,0.36,1)';
+      el.style.transform  = 'translateY(0)';
+      el.style.opacity    = '1';
+    }, delay);
+  });
+  ORDER.forEach(({ el }) => {
+    el.style.transform = 'translateY(20px)';
+  });
+}, 1400);
+
+/* Header scroll */
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 80);
+}, { passive: true });
+
+/* Scroll animations (IntersectionObserver) */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+
+document.querySelectorAll('.fadeup, .reveal').forEach(el => io.observe(el));
+
+/* Hero parallax */
+const heroBgPh = document.getElementById('heroBgPh');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  heroBgPh.style.transform = `translateY(${y * 0.35}px)`;
+}, { passive: true });
+
+/* Band parallax */
+const bandPh = document.getElementById('bandPh');
+if (bandPh) {
+  window.addEventListener('scroll', () => {
+    const rect = bandPh.parentElement.getBoundingClientRect();
+    const shift = (rect.top / window.innerHeight) * 40;
+    bandPh.style.transform = `translateY(${shift}px) scale(1.12)`;
+  }, { passive: true });
+}
+</script>
+</body>
+</html>

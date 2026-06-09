@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>霞 — Kasumi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #18130e;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; overflow: hidden;
+  }
+  .stage {
+    position: relative;
+    width: min(94vw, calc(90vh * 4 / 3));
+    aspect-ratio: 4 / 3;
+    box-shadow: 0 0 120px 12px rgba(210,190,165,0.10);
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .label {
+    position: absolute; bottom: 4.5%; width: 100%; text-align: center;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic; font-weight: 300;
+    font-size: clamp(0.58rem, 1.2vw, 0.85rem);
+    letter-spacing: 0.75em; text-indent: 0.75em;
+    color: rgba(210, 195, 172, 0.36);
+    pointer-events: none; user-select: none;
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <canvas id="c"></canvas>
+  <div class="label">霞 &ensp;·&ensp; kasumi</div>
+</div>
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════
+   Canvas — 800×600 (4:3) HiDPI
+═══════════════════════════════════════════════ */
+const canvas = document.getElementById('c');
+const ctx    = canvas.getContext('2d');
+const W = 800, H = 600;
+const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+canvas.width  = W * dpr;
+canvas.height = H * dpr;
+ctx.scale(dpr, dpr);
+
+/* ═══════════════════════════════════════════════
+   Helpers
+═══════════════════════════════════════════════ */
+const τ    = Math.PI * 2;
+const lerp = (a, b, t) => a + (b - a) * t;
+const lerpC= (a, b, t) => a.map((v, i) => lerp(v, b[i], t));
+const clamp= (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const rnd  = (lo, hi) => lo + Math.random() * (hi - lo);
+const rndI = (lo, hi) => Math.floor(rnd(lo, hi));
+const S    = Math.sin, C = Math.cos;
+
+function rgba([r, g, b], a) {
+  return `rgba(${r|0},${g|0},${b|0},${a.toFixed(5)})`;
+}
+
+/* cubic bezier 1-D */
+function bez(x0, x1, x2, x3, u) {
+  const m = 1 - u;
+  return m*m*m*x0 + 3*m*m*u*x1 + 3*m*u*u*x2 + u*u*u*x3;
+}
+
+/* ═══════════════════════════════════════════════
+   1. BACKGROUND
+   Deep warm tan → cream white — breathes gently
+═══════════════════════════════════════════════ */
+function drawBackground(t) {
+  const b = S(t * τ / 10) * 0.5 + 0.5;
+
+  const top = lerpC([244, 238, 226], [252, 248, 240], b);
+  const mid = lerpC([208, 194, 174], [224, 212, 194], b);
+  const bot = lerpC([168, 150, 128], [186, 170, 148], b);
+
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0,    rgba(top, 1));
+  g.addColorStop(0.42, rgba(mid, 1));
+  g.addColorStop(1,    rgba(bot, 1));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  // Warm central glow — breathes with scene
+  const lr = ctx.createRadialGradient(W*.5, H*.4, 0, W*.5, H*.4, W*.58);
+  lr.addColorStop(0,   rgba([255, 252, 244], 0.25 + b * 0.10));
+  lr.addColorStop(0.5, rgba([255, 250, 240], 0.08));
+  lr.addColorStop(1,   rgba([255, 250, 240], 0));
+  ctx.fillStyle = lr;
+  ctx.fillRect(0, 0, W, H);
+}
+
+/* ═══════════════════════════════════════════════
+   2. SILK CURTAINS
+   3 panels, each a field of bezier-sampled quads
+   with fold-angle lighting (bright peaks, dark troughs)
+═══════════════════════════════════════════════ */
+const PANELS = [
+  { cx: W * 0.20, w: W * 0.32, seed: 0.00, spd: 1.00 },
+  { cx: W * 0.57, w: W * 0.44, seed: 2.50, spd: 0.87 },
+  { cx: W * 0.88, w: W * 0.28, seed: 5.30, spd: 1.13 },
+];
+
+function drawSilkPanel(cx, pw, T, seed) {
+  const N  = 26;   // number of vertical control curves
+  const NS = 32;   // vertical sample count per curve
+  const idealW = pw / N;
+
+  /* Build control curve sample arrays */
+  const curves = [];
+  for (let c = 0; c <= N; c++) {
+    const f  = c / N;
+    const bx = cx - pw / 2 + f * pw;
+    const ph = f * τ * 3.8 + seed;
+
+    // Bezier X control points — top barely moves, mid billows most
+    const x0 = bx + S(T * 0.11 + ph) * 7;
+    const x1 = bx + S(T * 0.58 + ph) * 58 + C(T * 0.34 + ph * 1.3) * 32;
+    const x2 = bx + S(T * 0.45 + ph + 0.95) * 78 + S(T * 0.29 + ph * 0.75) * 42;
+    const x3 = bx + S(T * 0.40 + ph + 2.10) * 52 + C(T * 0.21 + ph * 0.52) * 24;
+
+    curves.push(
+      Array.from({ length: NS + 1 }, (_, i) => ({
+        x: bez(x0, x1, x2, x3, i / NS),
+        y: (i / NS) * H,
+      }))
+    );
+  }
+
+  /* Fill quads with fold lighting */
+  for (let c = 0; c < N; c++) {
+    const L = curves[c], R = curves[c + 1];
+    for (let s = 0; s < NS; s++) {
+      const tl = L[s], tr = R[s], bl = L[s + 1], br = R[s + 1];
+
+      // Average horizontal width of this strip
+      const avgDx = ((tr.x - tl.x) + (br.x - bl.x)) * 0.5;
+      // Fold angle relative to flat-vertical
+      const angle = Math.atan2(avgDx - idealW, H / NS);
+      // Brightness: cos(angle) = 1 at fold peak, 0 at 90°
+      const raw   = C(angle);
+      const bright = clamp(raw * 0.7 + 0.38, 0, 1);
+      const b2    = bright * bright;  // more contrast
+
+      // Whites at peak, warm shadows at trough
+      const cr = lerp(172, 255, b2);
+      const cg = lerp(158, 253, b2);
+      const cb = lerp(138, 248, b2);
+      const ca = lerp(0.015, 0.32, b2);
+
+      ctx.fillStyle = rgba([cr, cg, cb], ca);
+      ctx.beginPath();
+      ctx.moveTo(tl.x, tl.y);
+      ctx.lineTo(tr.x, tr.y);
+      ctx.lineTo(br.x, br.y);
+      ctx.lineTo(bl.x, bl.y);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  /* Moving sheen stripe — light sliding across fabric */
+  const sheenPos = (S(T * 0.32 + seed) * 0.5 + 0.5) * pw;
+  const sx = cx - pw / 2 + sheenPos;
+  const sg = ctx.createLinearGradient(sx - 55, 0, sx + 55, 0);
+  sg.addColorStop(0,   rgba([255, 254, 250], 0));
+  sg.addColorStop(0.5, rgba([255, 254, 250], 0.15));
+  sg.addColorStop(1,   rgba([255, 254, 250], 0));
+  ctx.fillStyle = sg;
+  ctx.fillRect(cx - pw / 2, 0, pw, H);
+}
+
+/* ═══════════════════════════════════════════════
+   3. WATER RIPPLES
+   Concentric expanding rings — multiple rings per drop
+═══════════════════════════════════════════════ */
+const ripples = [];
+let nextDrop  = rnd(0.8, 2.0);
+
+function spawnDrop() {
+  // Occasionally: small cluster of nearby drops
+  const cluster = Math.random() < 0.25 ? rndI(2, 4) : 1;
+  const ox = rnd(W * 0.10, W * 0.90);
+  const oy = rnd(H * 0.20, H * 0.85);
+
+  for (let k = 0; k < cluster; k++) {
+    ripples.push({
+      x:       ox + (k > 0 ? rnd(-22, 22) : 0),
+      y:       oy + (k > 0 ? rnd(-12, 12) : 0),
+      r:       0,
+      maxR:    rnd(48, 195),
+      grow:    rnd(1.0, 2.6),   // px / frame
+      alpha:   rnd(0.38, 0.82),
+      rings:   rndI(2, 6),
+      gap:     rnd(10, 22),
+    });
+  }
+}
+
+function tickRipples(dt) {
+  nextDrop -= dt;
+  if (nextDrop <= 0) {
+    spawnDrop();
+    nextDrop = rnd(1.0, 3.8);
+  }
+
+  ctx.save();
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const rp = ripples[i];
+    rp.r += rp.grow;
+    if (rp.r > rp.maxR) { ripples.splice(i, 1); continue; }
+
+    for (let ring = 0; ring < rp.rings; ring++) {
+      const rr = rp.r - ring * rp.gap;
+      if (rr < 1) continue;
+
+      const prog = rr / rp.maxR;
+      const fade = (1 - prog) * (1 - prog) * (1 - prog); // cubic fade
+      const lw   = lerp(3.0, 0.35, prog);
+
+      ctx.strokeStyle = rgba([255, 253, 247], rp.alpha * fade);
+      ctx.lineWidth   = lw;
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, rr, 0, τ);
+      ctx.stroke();
+    }
+
+    // Drop-point: tiny bright dot where the drop hits
+    const dotProg = clamp(1 - rp.r / 18, 0, 1);
+    if (dotProg > 0) {
+      ctx.fillStyle = rgba([255, 254, 250], 0.90 * dotProg);
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, 2.5, 0, τ);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════
+   4. BOKEH — large, soft, clearly drifting
+═══════════════════════════════════════════════ */
+const BOKEH_COLS = [
+  [255, 255, 255],
+  [255, 250, 238],
+  [248, 240, 226],
+  [240, 232, 218],
+];
+
+const bokeh = Array.from({ length: 42 }, () => ({
+  x:     rnd(0, W),
+  y:     rnd(0, H),
+  r:     rnd(14, 68),
+  spd:   rnd(0.08, 0.38) * (Math.random() < 0.5 ? 1 : -1),
+  spdY:  rnd(-0.018, 0.018),
+  wF:    rnd(0.006, 0.022),
+  wP:    rnd(0, τ),
+  alpha: rnd(0.025, 0.095),
+  col:   BOKEH_COLS[rndI(0, 4)],
+}));
+
+function drawBokeh() {
+  bokeh.forEach(o => {
+    o.x += o.spd;
+    o.y += o.spdY + S(t * o.wF + o.wP) * 0.04;
+    if (o.x >  W + o.r * 2) o.x = -o.r * 2;
+    if (o.x < -o.r * 2)     o.x =  W + o.r * 2;
+    if (o.y >  H + o.r * 2) o.y = -o.r * 2;
+    if (o.y < -o.r * 2)     o.y =  H + o.r * 2;
+
+    const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+    g.addColorStop(0.00, rgba(o.col, o.alpha));
+    g.addColorStop(0.40, rgba(o.col, o.alpha * 0.58));
+    g.addColorStop(0.75, rgba(o.col, o.alpha * 0.16));
+    g.addColorStop(1.00, rgba(o.col, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(o.x, o.y, o.r, 0, τ);
+    ctx.fill();
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   5. FINE DUST — tiny floating particles
+═══════════════════════════════════════════════ */
+const dust = Array.from({ length: 220 }, () => ({
+  x:      rnd(0, W),
+  y:      rnd(0, H),
+  r:      rnd(0.4, 1.7),
+  vx:     rnd(0.010, 0.055),
+  vy:     rnd(-0.025, 0.025),
+  wob:    rnd(0.14, 0.42),
+  wP:     rnd(0, τ),
+  alpha:  rnd(0.045, 0.20),
+  pulse:  rnd(0, τ),
+  pulseS: rnd(0.005, 0.016),
+}));
+
+function drawDust() {
+  dust.forEach(p => {
+    p.x     += p.vx + S(t * p.wob + p.wP) * 0.022;
+    p.y     += p.vy + C(t * p.wob * 0.72 + p.wP) * 0.016;
+    p.pulse += p.pulseS;
+    if (p.x > W + 3) p.x = -3;
+    if (p.x < -3)    p.x =  W + 3;
+    if (p.y > H + 3) p.y = -3;
+    if (p.y < -3)    p.y =  H + 3;
+    ctx.globalAlpha = p.alpha * (S(p.pulse) * 0.44 + 0.56);
+    ctx.fillStyle = 'rgba(255,251,244,1)';
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, τ);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+/* ═══════════════════════════════════════════════
+   6. VIGNETTE — warm dark edges
+═══════════════════════════════════════════════ */
+function drawVignette() {
+  const g = ctx.createRadialGradient(W/2, H/2, H * 0.14, W/2, H/2, W * 0.84);
+  g.addColorStop(0,    'rgba(0,0,0,0)');
+  g.addColorStop(0.50, 'rgba(0,0,0,0)');
+  g.addColorStop(0.76, 'rgba(18,12,6,0.12)');
+  g.addColorStop(1,    'rgba(18,12,6,0.42)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+/* ═══════════════════════════════════════════════
+   Main loop
+═══════════════════════════════════════════════ */
+let t = 0, lastTs = 0;
+
+function frame(ts) {
+  const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.05) : 1 / 60;
+  lastTs = ts;
+  t += dt;
+
+  drawBackground(t);
+
+  // Silk panels — each at its own speed
+  PANELS.forEach(p => drawSilkPanel(p.cx, p.w, t * p.spd, p.seed));
+
+  drawBokeh();
+  tickRipples(dt);
+  drawDust();
+  drawVignette();
+
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

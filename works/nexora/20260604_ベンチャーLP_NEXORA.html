@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXORA – Next Intelligence. Infinite Scale.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:    #ffffff;
+      --bg2:   #f8fafc;
+      --bg3:   #f1f5f9;
+      --blue:  #2563eb;
+      --blue2: #3b82f6;
+      --cyan:  #0284c7;
+      --green: #059669;
+      --amber: #d97706;
+      --text:  #0f172a;
+      --text2: #475569;
+      --text3: #94a3b8;
+      --border:rgba(15,23,42,.1);
+      --grad:  linear-gradient(135deg,#2563eb,#0284c7);
+      --sg:    'Space Grotesk', sans-serif;
+      --jp:    'Noto Sans JP', sans-serif;
+      --mono:  'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--jp); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 56px; height: 68px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(15,23,42,.08);
+    }
+    .nav-logo { font-family: var(--sg); font-size: 1.45rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { font-family: var(--sg); font-size: .84rem; font-weight: 500; letter-spacing: .04em; color: var(--text2); text-decoration: none; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+    .nav-login { font-family: var(--sg); font-size: .84rem; font-weight: 500; color: var(--text2); text-decoration: none; padding: 9px 18px; transition: color .2s; }
+    .nav-login:hover { color: var(--text); }
+    .nav-cta { font-family: var(--sg); font-size: .84rem; font-weight: 600; padding: 9px 22px; background: var(--blue); color: #fff; border: none; border-radius: 7px; cursor: pointer; text-decoration: none; transition: background .2s, box-shadow .3s; }
+    .nav-cta:hover { background: var(--blue2); box-shadow: 0 0 22px rgba(37,99,235,.5); }
+
+    /* HERO */
+    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; overflow: hidden; }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(15,23,42,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-orb { position: absolute; border-radius: 50%; pointer-events: none; filter: blur(130px); }
+    .hero-orb-1 { width: 560px; height: 560px; top: -100px; right: -60px; background: rgba(37,99,235,.07); }
+    .hero-orb-2 { width: 320px; height: 320px; bottom: -60px; left: 80px; background: rgba(2,132,199,.07); }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto; padding: 140px 56px 100px;
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .18em;
+      color: var(--blue); background: rgba(37,99,235,.06); border: 1px solid rgba(37,99,235,.2);
+      border-radius: 100px; padding: 5px 14px; margin-bottom: 26px;
+    }
+    .hero-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: dot-pulse 2s ease-in-out infinite; }
+    @keyframes dot-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.7)} }
+
+    .hero-h1 { font-family: var(--sg); font-size: clamp(2.4rem,4.2vw,3.8rem); font-weight: 700; line-height: 1.1; letter-spacing: -.025em; margin-bottom: 22px; }
+    .grad-text { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { font-size: .98rem; color: var(--text2); line-height: 1.85; margin-bottom: 36px; }
+    .hero-form { display: flex; gap: 10px; margin-bottom: 20px; }
+    .hero-input {
+      flex: 1; padding: 13px 18px; background: #f8fafc; border: 1px solid rgba(15,23,42,.12);
+      border-radius: 8px; color: var(--text); font-family: var(--jp); font-size: .9rem;
+      outline: none; transition: border-color .3s;
+    }
+    .hero-input::placeholder { color: #94a3b8; }
+    .hero-input:focus { border-color: var(--blue); }
+    .btn-primary {
+      font-family: var(--sg); font-size: .9rem; font-weight: 600; letter-spacing: .03em;
+      padding: 13px 28px; background: var(--blue); color: #fff; border: none; border-radius: 8px;
+      cursor: pointer; text-decoration: none; white-space: nowrap;
+      position: relative; overflow: hidden; transition: box-shadow .3s, transform .2s;
+    }
+    .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent); transform:translateX(-120%); transition:transform .5s; }
+    .btn-primary:hover { box-shadow: 0 0 28px rgba(37,99,235,.55); transform: translateY(-1px); }
+    .btn-primary:hover::after { transform: translateX(120%); }
+    .btn-ghost { font-family: var(--sg); font-size: .9rem; font-weight: 500; padding: 13px 28px; background: transparent; color: var(--text); border: 1px solid rgba(15,23,42,.15); border-radius: 8px; cursor: pointer; text-decoration: none; transition: border-color .3s, background .3s; }
+    .btn-ghost:hover { border-color: var(--blue); background: rgba(37,99,235,.06); }
+
+    .hero-note { font-size: .76rem; color: var(--text3); }
+    .hero-note span { color: var(--green); }
+
+    /* Hero dashboard */
+    .hero-dashboard {
+      background: #ffffff; border: 1px solid rgba(15,23,42,.1); border-radius: 16px;
+      overflow: hidden; box-shadow: 0 24px 60px rgba(15,23,42,.1), 0 4px 16px rgba(15,23,42,.06);
+    }
+    .dash-titlebar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; background: #f8fafc; border-bottom: 1px solid rgba(15,23,42,.08);
+    }
+    .dash-dots { display: flex; gap: 6px; }
+    .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-dot-r { background: #ef4444; } .dash-dot-y { background: #eab308; } .dash-dot-g { background: #22c55e; }
+    .dash-url { font-family: var(--mono); font-size: .68rem; color: var(--text3); background: #fff; border: 1px solid rgba(15,23,42,.1); border-radius: 5px; padding: 4px 14px; }
+    .dash-body { padding: 20px; }
+    .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .dash-title { font-family: var(--sg); font-size: .85rem; font-weight: 600; }
+    .dash-badge { font-family: var(--mono); font-size: .62rem; color: var(--green); background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2); border-radius: 100px; padding: 3px 10px; }
+    .dash-kpis { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+    .dash-kpi { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 9px; padding: 12px 14px; }
+    .dash-kpi-val { font-family: var(--sg); font-size: 1.2rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .dash-kpi-label { font-size: .7rem; color: var(--text3); margin-top: 2px; }
+    .dash-chart-wrap { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 9px; padding: 14px; margin-bottom: 10px; }
+    .dash-chart-title { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; color: var(--text3); margin-bottom: 12px; }
+    .dash-chart { display: flex; align-items: flex-end; gap: 5px; height: 64px; }
+    .dash-bar { flex: 1; border-radius: 3px 3px 0 0; background: rgba(37,99,235,.3); border: 1px solid rgba(37,99,235,.4); transform: scaleY(0); transform-origin: bottom; animation: barUp .6s ease-out forwards; }
+    .dash-bar.hi { background: linear-gradient(to top, var(--blue), var(--cyan)); border-color: var(--cyan); box-shadow: 0 0 10px rgba(6,182,212,.35); }
+    @keyframes barUp { to { transform: scaleY(1); } }
+    .dash-alerts { display: flex; flex-direction: column; gap: 6px; }
+    .dash-alert { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: .68rem; color: var(--text2); background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 6px; padding: 8px 12px; }
+    .dash-alert-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .alert-g { background: var(--green); } .alert-b { background: var(--blue2); } .alert-a { background: var(--amber); }
+
+    /* LOGOS */
+    .logos { padding: 48px 0; border-top: 1px solid rgba(15,23,42,.08); border-bottom: 1px solid rgba(15,23,42,.08); background: #f8fafc; }
+    .logos-inner { max-width: 1200px; margin: 0 auto; padding: 0 56px; }
+    .logos-label { font-family: var(--mono); font-size: .65rem; letter-spacing: .18em; color: var(--text3); text-align: center; text-transform: uppercase; margin-bottom: 28px; }
+    .logos-row { display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .logo-item { font-family: var(--sg); font-size: .95rem; font-weight: 600; letter-spacing: .06em; color: #64748b; opacity: .55; transition: opacity .3s; user-select: none; }
+    .logo-item:hover { opacity: .9; }
+
+    /* SECTION COMMON */
+    .section { padding: 100px 0; }
+    .section-inner { max-width: 1200px; margin: 0 auto; padding: 0 56px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: .67rem; letter-spacing: .2em; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
+    .eyebrow::before { content: ''; width: 20px; height: 1px; background: var(--blue); }
+    .sec-h2 { font-family: var(--sg); font-size: clamp(1.75rem,2.8vw,2.7rem); font-weight: 700; letter-spacing: -.022em; line-height: 1.14; margin-bottom: 14px; }
+    .sec-desc { font-size: .96rem; color: var(--text2); max-width: 560px; line-height: 1.85; }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s} .d5{transition-delay:.5s}
+
+    /* PAIN POINTS */
+    .pain { background: var(--bg2); }
+    .pain-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 56px; }
+    .pain-visual { position: relative; }
+    .pain-cards { display: flex; flex-direction: column; gap: 14px; }
+    .pain-card {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: #ffffff; border: 1px solid rgba(15,23,42,.08);
+      border-radius: 12px; padding: 20px 22px;
+      transition: border-color .3s, transform .3s;
+    }
+    .pain-card:hover { border-color: rgba(239,68,68,.35); transform: translateX(4px); box-shadow: 0 4px 16px rgba(239,68,68,.08); }
+    .pain-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .pain-title { font-family: var(--sg); font-size: .97rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+    .pain-desc { font-size: .83rem; color: var(--text2); line-height: 1.75; }
+    .pain-badge { display: inline-block; font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; color: #ef4444; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.2); border-radius: 4px; padding: 2px 8px; margin-top: 6px; }
+
+    .pain-solution { display: flex; flex-direction: column; gap: 18px; }
+    .pain-solution-header { margin-bottom: 8px; }
+    .pain-solution-label { font-family: var(--mono); font-size: .65rem; letter-spacing: .15em; color: var(--blue); text-transform: uppercase; margin-bottom: 10px; }
+    .pain-solution-title { font-family: var(--sg); font-size: 1.5rem; font-weight: 700; line-height: 1.25; }
+    .solution-item { display: flex; align-items: flex-start; gap: 14px; }
+    .solution-check { width: 22px; height: 22px; border-radius: 50%; background: rgba(37,99,235,.07); border: 1px solid rgba(37,99,235,.4); display: flex; align-items: center; justify-content: center; font-size: .75rem; flex-shrink: 0; margin-top: 1px; color: var(--blue2); }
+    .solution-text { font-size: .9rem; color: var(--text2); line-height: 1.75; }
+    .solution-text strong { color: var(--text); font-weight: 600; }
+
+    /* PRODUCT */
+    .product-tabs { display: flex; gap: 4px; background: #f1f5f9; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 5px; margin-bottom: 32px; width: fit-content; }
+    .product-tab { font-family: var(--sg); font-size: .82rem; font-weight: 500; padding: 8px 20px; border-radius: 7px; cursor: pointer; border: none; background: transparent; color: var(--text2); transition: background .3s, color .3s; display: flex; align-items: center; gap: 6px; }
+    .product-tab i[data-lucide] { width: 14px; height: 14px; }
+    .product-tab.active { background: var(--blue); color: #fff; }
+    .product-panels { position: relative; }
+    .product-panel { display: none; }
+    .product-panel.active { display: block; }
+    .product-screen {
+      background: #ffffff; border: 1px solid rgba(15,23,42,.1); border-radius: 14px;
+      overflow: hidden; box-shadow: 0 20px 56px rgba(15,23,42,.1), 0 4px 16px rgba(15,23,42,.06);
+    }
+    .screen-bar { display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: #f8fafc; border-bottom: 1px solid rgba(15,23,42,.08); }
+    .screen-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .screen-dot-r{background:#ef4444} .screen-dot-y{background:#eab308} .screen-dot-g{background:#22c55e}
+    .screen-title { font-family: var(--mono); font-size: .65rem; color: var(--text3); margin-left: 6px; }
+    .screen-body { padding: 22px; }
+
+    /* Panel 1: Analytics */
+    .analytics-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+    .analytics-main { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 16px; }
+    .analytics-sidebar { display: flex; flex-direction: column; gap: 10px; }
+    .analytics-title { font-family: var(--sg); font-size: .8rem; font-weight: 600; margin-bottom: 14px; }
+    .analytics-line-chart { display: flex; align-items: flex-end; gap: 3px; height: 80px; }
+    .a-bar { flex: 1; border-radius: 2px 2px 0 0; background: rgba(37,99,235,.35); transform: scaleY(0); transform-origin: bottom; animation: barUp .5s ease-out forwards; }
+    .a-bar.peak { background: linear-gradient(to top, var(--blue), var(--cyan)); box-shadow: 0 0 8px rgba(37,99,235,.4); }
+    .analytics-side-card { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 14px; }
+    .a-side-num { font-family: var(--sg); font-size: 1.3rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .a-side-label { font-size: .7rem; color: var(--text3); margin-top: 2px; }
+    .a-side-change { font-family: var(--mono); font-size: .65rem; color: var(--green); margin-top: 4px; }
+
+    /* Panel 2: Predict */
+    .predict-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .predict-card { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 16px; }
+    .predict-label { font-family: var(--mono); font-size: .62rem; letter-spacing: .1em; color: var(--text3); margin-bottom: 10px; text-transform: uppercase; }
+    .predict-val { font-family: var(--sg); font-size: 2rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+    .predict-sub { font-size: .75rem; color: var(--text2); margin-top: 6px; }
+    .predict-bar-wrap { margin-top: 12px; }
+    .predict-bar-bg { background: rgba(15,23,42,.08); border-radius: 100px; height: 5px; overflow: hidden; }
+    .predict-bar-fill { height: 100%; border-radius: 100px; background: var(--grad); animation: fillBar 1.2s ease-out forwards; transform-origin: left; }
+    @keyframes fillBar { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+    .predict-full { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 16px; grid-column: 1/-1; }
+    .predict-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(15,23,42,.06); }
+    .predict-row:last-child { border: none; }
+    .predict-row-label { font-size: .8rem; color: var(--text2); }
+    .predict-row-val { font-family: var(--mono); font-size: .8rem; }
+    .val-g { color: var(--green); } .val-b { color: var(--blue2); } .val-a { color: var(--amber); }
+
+    /* Panel 3: Security */
+    .sec-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .sec-card { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 14px 16px; }
+    .sec-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .sec-card-title { font-family: var(--sg); font-size: .82rem; font-weight: 600; }
+    .sec-status { font-family: var(--mono); font-size: .6rem; padding: 2px 8px; border-radius: 100px; }
+    .status-ok { color: var(--green); background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2); }
+    .status-warn { color: var(--amber); background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.2); }
+    .sec-card-val { font-family: var(--sg); font-size: 1.4rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sec-card-sub { font-size: .72rem; color: var(--text3); margin-top: 2px; }
+    .sec-log { background: #f8fafc; border: 1px solid rgba(15,23,42,.08); border-radius: 10px; padding: 14px; margin-top: 10px; }
+    .sec-log-title { font-family: var(--mono); font-size: .62rem; color: var(--text3); margin-bottom: 10px; letter-spacing: .1em; text-transform: uppercase; }
+    .sec-log-row { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: .68rem; color: var(--text2); padding: 5px 0; border-bottom: 1px solid rgba(15,23,42,.05); }
+    .sec-log-row:last-child { border: none; }
+    .sec-log-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+    /* CASE STUDIES */
+    .cases { background: var(--bg2); }
+    .cases-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin-top: 56px; }
+    .case-card {
+      background: #ffffff; border: 1px solid rgba(15,23,42,.09); border-radius: 16px;
+      padding: 32px 28px; position: relative; overflow: hidden;
+      transition: border-color .3s, transform .3s;
+    }
+    .case-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--grad); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
+    .case-card:hover { border-color: rgba(37,99,235,.3); transform: translateY(-4px); }
+    .case-card:hover::before { transform: scaleX(1); }
+    .case-industry { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; color: var(--blue2); text-transform: uppercase; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .case-company { font-family: var(--sg); font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+    .case-metrics { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding: 16px; background: rgba(37,99,235,.04); border: 1px solid rgba(37,99,235,.12); border-radius: 10px; }
+    .case-metric { display: flex; justify-content: space-between; align-items: center; }
+    .case-metric-num { font-family: var(--sg); font-size: 1.5rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .case-metric-label { font-size: .78rem; color: var(--text2); }
+    .case-quote { font-size: .84rem; color: var(--text2); line-height: 1.8; font-style: italic; margin-bottom: 20px; }
+    .case-author { display: flex; align-items: center; gap: 10px; }
+    .case-avatar { width: 44px; height: 44px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-family: var(--sg); font-size: .78rem; font-weight: 700; color: #fff; flex-shrink: 0; overflow: hidden; border: 2px solid rgba(37,99,235,.35); }
+    .case-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .case-name { font-family: var(--sg); font-size: .84rem; font-weight: 600; }
+    .case-role { font-size: .72rem; color: var(--text3); }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; margin-top: 56px; align-items: start; }
+    .price-card {
+      background: #ffffff; border: 1px solid rgba(15,23,42,.1); border-radius: 16px;
+      padding: 36px 28px; position: relative; transition: transform .3s;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.featured {
+      background: #eff6ff; border-color: var(--blue);
+      box-shadow: 0 0 0 1px var(--blue), 0 20px 48px rgba(37,99,235,.12);
+    }
+    .price-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-family: var(--sg); font-size: .72rem; font-weight: 700; letter-spacing: .05em; background: var(--grad); color: #fff; padding: 4px 16px; border-radius: 100px; white-space: nowrap; }
+    .price-plan { font-family: var(--mono); font-size: .68rem; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+    .price-num { font-family: var(--sg); font-size: 2.6rem; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+    .price-unit { font-size: .8rem; font-weight: 400; color: var(--text2); font-family: var(--jp); }
+    .price-desc { font-size: .82rem; color: var(--text2); margin-bottom: 26px; line-height: 1.7; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .price-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .price-feature { display: flex; align-items: center; gap: 10px; font-size: .84rem; color: var(--text2); }
+    .price-feature-check { color: var(--green); flex-shrink: 0; font-size: .85rem; }
+    .price-feature-x { color: var(--text3); flex-shrink: 0; font-size: .85rem; }
+    .price-feature.dim { color: var(--text3); }
+    .price-cta { display: block; text-align: center; padding: 12px; border-radius: 8px; font-family: var(--sg); font-size: .88rem; font-weight: 600; text-decoration: none; transition: background .3s, box-shadow .3s; }
+    .price-cta-outline { border: 1px solid rgba(15,23,42,.15); color: var(--text); }
+    .price-cta-outline:hover { border-color: var(--blue); background: rgba(37,99,235,.1); }
+    .price-cta-solid { background: var(--blue); color: #fff; }
+    .price-cta-solid:hover { background: var(--blue2); box-shadow: 0 0 20px rgba(37,99,235,.45); }
+
+    /* FAQ */
+    .faq { background: var(--bg2); }
+    .faq-cols { display: grid; grid-template-columns: 1fr 1.8fr; gap: 80px; align-items: start; margin-top: 56px; }
+    .faq-side-title { font-family: var(--sg); font-size: 1.4rem; font-weight: 700; margin-bottom: 12px; }
+    .faq-side-desc { font-size: .88rem; color: var(--text2); line-height: 1.8; margin-bottom: 28px; }
+    .faq-contact { display: inline-flex; align-items: center; gap: 8px; font-family: var(--sg); font-size: .85rem; font-weight: 600; color: var(--blue); text-decoration: none; }
+    .faq-contact:hover { color: var(--blue2); }
+    .faq-list { display: flex; flex-direction: column; }
+    .faq-item { border-bottom: 1px solid rgba(15,23,42,.08); }
+    .faq-q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 0; background: none; border: none; cursor: pointer; text-align: left; font-family: var(--jp); font-size: .95rem; font-weight: 500; color: var(--text); }
+    .faq-icon { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(15,23,42,.12); display: flex; align-items: center; justify-content: center; font-size: .95rem; color: var(--blue2); transition: transform .3s, background .3s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: rgba(37,99,235,.15); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height .42s ease, padding .3s; }
+    .faq-item.open .faq-a { max-height: 300px; padding-bottom: 18px; }
+    .faq-a p { font-size: .88rem; color: var(--text2); line-height: 1.85; }
+
+    /* CTA */
+    .cta-section { position: relative; overflow: hidden; }
+    .cta-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 70% at 50% 100%, rgba(37,99,235,.08), transparent 70%); pointer-events: none; }
+    .cta-inner {
+      position: relative; z-index: 2;
+      max-width: 1200px; margin: 0 auto; padding: 100px 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .cta-eyebrow { font-family: var(--mono); font-size: .67rem; letter-spacing: .2em; color: var(--blue); text-transform: uppercase; margin-bottom: 18px; }
+    .cta-h2 { font-family: var(--sg); font-size: clamp(1.8rem,3vw,2.8rem); font-weight: 700; letter-spacing: -.022em; line-height: 1.15; margin-bottom: 16px; }
+    .cta-sub { font-size: .95rem; color: var(--text2); line-height: 1.85; margin-bottom: 32px; }
+    .cta-actions { display: flex; gap: 12px; }
+    .cta-right { display: flex; flex-direction: column; gap: 14px; }
+    .cta-feature { display: flex; align-items: center; gap: 14px; background: #ffffff; border: 1px solid rgba(15,23,42,.1); border-radius: 12px; padding: 18px 20px; }
+    .cta-feature-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .cta-feature-title { font-family: var(--sg); font-size: .9rem; font-weight: 600; margin-bottom: 2px; }
+    .cta-feature-desc { font-size: .78rem; color: var(--text2); }
+
+    /* FOOTER */
+    footer { background: #0f172a; border-top: 1px solid rgba(255,255,255,.08); padding: 64px 56px 40px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-logo { font-family: var(--sg); font-size: 1.45rem; font-weight: 700; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; margin-bottom: 12px; }
+    .footer-desc { font-size: .81rem; color: #64748b; line-height: 1.8; margin-bottom: 20px; }
+    .footer-social { display: flex; gap: 10px; }
+    .footer-social-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; font-size: .8rem; color: var(--text3); text-decoration: none; transition: border-color .2s, color .2s; }
+    .footer-social-btn:hover { border-color: #3b82f6; color: #60a5fa; }
+    .footer-col-title { font-family: var(--sg); font-size: .77rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: #94a3b8; margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: .81rem; color: #64748b; text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: #cbd5e1; }
+    .footer-bottom { padding-top: 28px; border-top: 1px solid rgba(255,255,255,.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-family: var(--mono); font-size: .68rem; color: #64748b; }
+    .footer-address { font-family: var(--mono); font-size: .68rem; color: #64748b; }
+
+    /* TEAM */
+    .team { background: var(--bg2); }
+    .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
+    .team-card {
+      background: #ffffff; border: 1px solid rgba(15,23,42,.08); border-radius: 16px;
+      overflow: hidden; transition: transform .3s, border-color .3s, box-shadow .3s;
+    }
+    .team-card:hover { transform: translateY(-5px); border-color: rgba(37,99,235,.3); box-shadow: 0 16px 48px rgba(37,99,235,.1); }
+    .team-photo { width: 100%; aspect-ratio: 3/4; overflow: hidden; position: relative; }
+    .team-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform .5s ease; }
+    .team-card:hover .team-photo img { transform: scale(1.04); }
+    .team-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(15,23,42,.3) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .team-info { padding: 22px 24px 26px; }
+    .team-role { font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; color: var(--blue2); text-transform: uppercase; margin-bottom: 6px; }
+    .team-name { font-family: var(--sg); font-size: 1.12rem; font-weight: 700; margin-bottom: 10px; }
+    .team-bio { font-size: .82rem; color: var(--text2); line-height: 1.8; margin-bottom: 16px; }
+    .team-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .team-tag { font-family: var(--mono); font-size: .58rem; letter-spacing: .08em; color: var(--text3); background: rgba(15,23,42,.04); border: 1px solid rgba(15,23,42,.08); padding: 3px 8px; border-radius: 4px; }
+
+    /* CTA with photo bg */
+    .cta-photo-bg {
+      position: absolute; inset: 0;
+      background-image: url('team_office.png');
+      background-size: cover; background-position: center;
+      opacity: .12;
+    }
+
+    /* ICONS */
+    i[data-lucide] { display: block; stroke-width: 1.75; }
+    .service-icon i[data-lucide] { width: 26px; height: 26px; color: var(--blue2); }
+    .pain-icon i[data-lucide]    { width: 26px; height: 26px; color: var(--text2); }
+    .feature-icon-wrap i[data-lucide] { width: 22px; height: 22px; color: var(--blue2); }
+    .cta-feature-icon i[data-lucide]  { width: 24px; height: 24px; color: var(--blue2); }
+    .badge-icon i[data-lucide] { width: 18px; height: 18px; color: var(--blue2); }
+    .badge-icon-c i[data-lucide] { color: var(--cyan); }
+    .footer-social-btn i[data-lucide] { width: 14px; height: 14px; color: #94a3b8; }
+    .case-industry i[data-lucide] { width: 14px; height: 14px; display: inline; vertical-align: middle; }
+    .nav-cta i[data-lucide] { width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-left: 4px; }
+    .btn-primary i[data-lucide] { width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-left: 6px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav { padding: 0 24px; }
+      .nav-links, .nav-login { display: none; }
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; padding: 110px 24px 60px; }
+      .hero-dashboard { display: none; }
+      .hero-form { flex-direction: column; }
+      .logos-inner { padding: 0 24px; }
+      .logos-row { gap: 24px; }
+      .section-inner { padding: 0 24px; }
+      .pain-layout { grid-template-columns: 1fr; gap: 40px; }
+      .cases-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .faq-cols { grid-template-columns: 1fr; gap: 32px; }
+      .cta-inner { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      footer { padding: 48px 24px 32px; }
+    }
+
+
+  /* ── OPENING ANIMATION ── */
+  #op {
+    position: fixed; inset: 0; z-index: 10000;
+    background: #030712;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    transition: opacity .45s ease;
+  }
+  #op.done { opacity: 0; pointer-events: none; }
+
+  .op-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(37,99,235,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(37,99,235,.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+  }
+  /* Data rain drops */
+  .op-drop {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    pointer-events: none;
+    top: -40px;
+    animation: dropFall linear forwards;
+  }
+  @keyframes dropFall {
+    0%   { transform: translateY(0);     opacity: 0; }
+    8%   { opacity: var(--op); }
+    88%  { opacity: var(--op); }
+    100% { transform: translateY(115vh); opacity: 0; }
+  }
+  .op-drop.cb { color: rgba(96,165,250,1); }
+  .op-drop.cg { color: rgba(52,211,153,1); }
+  .op-drop.ca { color: rgba(251,191,36,1); }
+  .op-drop.cw { color: rgba(226,232,240,1); }
+  .op-drop.cd { color: rgba(100,116,139,1); }
+
+  /* Center logo */
+  .op-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 4; text-align: center;
+    padding: 32px 64px 36px;
+    background: radial-gradient(ellipse 120% 140% at 50% 50%, rgba(3,7,18,.88) 40%, transparent 100%);
+  }
+  .op-logo-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .op-logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    font-weight: 700; letter-spacing: -.03em;
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 40px rgba(37,99,235,.7));
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .op-logo-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(.58rem, 1.1vw, .82rem);
+    letter-spacing: .26em; text-transform: uppercase;
+    color: rgba(148,163,184,.5);
+    opacity: 0; transition: opacity .4s ease .2s;
+  }
+  .op-logo-wrap.in .op-logo-text { opacity: 1; transform: translateY(0); }
+  .op-logo-wrap.in .op-logo-sub  { opacity: 1; }
+
+  /* Scanline */
+  .op-scan {
+    position: absolute; left: 0; right: 0; height: 2px; top: -4px;
+    background: linear-gradient(90deg, transparent 0%, #1d4ed8 20%, #60a5fa 50%, #0ea5e9 80%, transparent 100%);
+    box-shadow: 0 0 18px 4px rgba(37,99,235,.8), 0 0 50px 10px rgba(37,99,235,.3);
+    opacity: 0; z-index: 5;
+  }
+  .op-scan::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 2px;
+    height: 100px;
+    background: linear-gradient(to bottom, rgba(37,99,235,.1), transparent);
+  }
+  .op-scan.go { animation: scanDown .65s cubic-bezier(.3,0,.5,1) forwards; }
+  @keyframes scanDown {
+    0%   { top: -4px; opacity: 1; }
+    100% { top: 101vh; opacity: .5; }
+  }
+
+  /* Flash */
+  .op-flash {
+    position: absolute; inset: 0; background: #fff;
+    opacity: 0; z-index: 6; pointer-events: none;
+  }
+  .op-flash.go { animation: flashBurst .55s ease forwards; }
+  @keyframes flashBurst {
+    0%  { opacity: 0; }
+    28% { opacity: 1; }
+    100%{ opacity: 0; }
+  }
+  </style>
+</head>
+<body>
+
+<!-- OPENING -->
+<div id="op">
+  <div class="op-grid"></div>
+  <!-- Drop container -->
+  <div id="opRain" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;"></div>
+  <!-- Logo overlay -->
+  <div class="op-center">
+    <div class="op-logo-wrap" id="opLogo">
+      <div class="op-logo-text">NEXORA</div>
+      <div class="op-logo-sub">Next Intelligence. Infinite Scale.</div>
+    </div>
+  </div>
+  <div class="op-scan"  id="opScan"></div>
+  <div class="op-flash" id="opFlash"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">NEXORA</div>
+  <ul class="nav-links">
+    <li><a href="#product">プロダクト</a></li>
+    <li><a href="#cases">導入事例</a></li>
+    <li><a href="#pricing">料金</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="#" class="nav-login">ログイン</a>
+    <a href="#cta" class="nav-cta">無料で始める</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="hero-dot"></span>
+        NEW — AIエンジン v4.2 リリース
+      </div>
+      <h1 class="hero-h1">
+        データの力を、<br>
+        <span class="grad-text">意思決定の速度</span>に<br>
+        変換する。
+      </h1>
+      <p class="hero-sub">
+        NEXORAはリアルタイム分析・AI予測・セキュアなインフラを一つのプラットフォームに統合。
+        複雑なデータ処理を、誰でも扱えるインテリジェンスへと変えます。
+      </p>
+      <div class="hero-form">
+        <input type="email" class="hero-input" placeholder="business@company.co.jp">
+        <a href="#" class="btn-primary">無料デモを予約</a>
+      </div>
+      <p class="hero-note"><span>✓</span> クレジットカード不要 &nbsp;·&nbsp; <span>✓</span> 14日間無料トライアル &nbsp;·&nbsp; <span>✓</span> 最短翌日導入</p>
+    </div>
+
+    <div class="hero-dashboard">
+      <div class="dash-titlebar">
+        <div class="dash-dots">
+          <div class="dash-dot dash-dot-r"></div>
+          <div class="dash-dot dash-dot-y"></div>
+          <div class="dash-dot dash-dot-g"></div>
+        </div>
+        <div class="dash-url">nexora.app / dashboard</div>
+        <div></div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-header">
+          <div class="dash-title">Executive Overview · Q2 2026</div>
+          <div class="dash-badge">● LIVE</div>
+        </div>
+        <div class="dash-kpis">
+          <div class="dash-kpi">
+            <div class="dash-kpi-val">¥2.4B</div>
+            <div class="dash-kpi-label">予測売上</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="dash-kpi-val">31%↑</div>
+            <div class="dash-kpi-label">コスト削減</div>
+          </div>
+          <div class="dash-kpi">
+            <div class="dash-kpi-val">0.08</div>
+            <div class="dash-kpi-label">リスク指数</div>
+          </div>
+        </div>
+        <div class="dash-chart-wrap">
+          <div class="dash-chart-title">REVENUE FORECAST vs ACTUAL</div>
+          <div class="dash-chart">
+            <div class="dash-bar"    style="height:42%;animation-delay:.1s"></div>
+            <div class="dash-bar"    style="height:58%;animation-delay:.2s"></div>
+            <div class="dash-bar"    style="height:51%;animation-delay:.3s"></div>
+            <div class="dash-bar"    style="height:74%;animation-delay:.4s"></div>
+            <div class="dash-bar hi" style="height:92%;animation-delay:.5s"></div>
+            <div class="dash-bar"    style="height:66%;animation-delay:.6s"></div>
+            <div class="dash-bar"    style="height:55%;animation-delay:.7s"></div>
+            <div class="dash-bar hi" style="height:82%;animation-delay:.8s"></div>
+          </div>
+        </div>
+        <div class="dash-alerts">
+          <div class="dash-alert"><span class="dash-alert-dot alert-g"></span>AIモデル更新完了 — 精度 98.7%</div>
+          <div class="dash-alert"><span class="dash-alert-dot alert-b"></span>新規データソース 2,847件 接続中</div>
+          <div class="dash-alert"><span class="dash-alert-dot alert-a"></span>需要予測：来月比 +23.4% 予想</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos">
+  <div class="logos-inner">
+    <div class="logos-label">500社以上の企業に選ばれています</div>
+    <div class="logos-row">
+      <div class="logo-item">SOFTBANK</div>
+      <div class="logo-item">RECRUIT</div>
+      <div class="logo-item">SONY</div>
+      <div class="logo-item">TOYOTA</div>
+      <div class="logo-item">MIZUHO</div>
+      <div class="logo-item">KDDI</div>
+      <div class="logo-item">NTT</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAIN POINTS -->
+<section class="section pain" id="pain">
+  <div class="section-inner">
+    <div class="eyebrow reveal">THE PROBLEM</div>
+    <div class="pain-layout">
+      <div>
+        <h2 class="sec-h2 reveal d1">
+          データは増えても、<br><span class="grad-text">意思決定は遅くなる</span>
+        </h2>
+        <p class="sec-desc reveal d2" style="margin-bottom:36px;">
+          多くの企業が直面する「データはあるのに活かせない」という壁。その根本にある3つの課題です。
+        </p>
+        <div class="pain-cards">
+          <div class="pain-card reveal d2">
+            <div class="pain-icon"><i data-lucide="bar-chart-2"></i></div>
+            <div>
+              <div class="pain-title">データがサイロ化している</div>
+              <p class="pain-desc">CRM・ERP・MAなど各ツールにデータが分散し、統合した分析ができない。</p>
+              <div class="pain-badge">平均7.3ツール間のデータ断絶</div>
+            </div>
+          </div>
+          <div class="pain-card reveal d3">
+            <div class="pain-icon"><i data-lucide="clock"></i></div>
+            <div>
+              <div class="pain-title">レポート作成に時間を取られる</div>
+              <p class="pain-desc">週次レポートに丸一日。その頃には情報が古くなっている。</p>
+              <div class="pain-badge">月平均32時間を手作業に消費</div>
+            </div>
+          </div>
+          <div class="pain-card reveal d4">
+            <div class="pain-icon"><i data-lucide="shuffle"></i></div>
+            <div>
+              <div class="pain-title">勘と経験に頼った判断が続く</div>
+              <p class="pain-desc">データがあっても分析できる人材がいない。結局、経験則に頼ってしまう。</p>
+              <div class="pain-badge">データドリブン化の遅れは競合に差をつけられる</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pain-solution reveal d2">
+        <div class="pain-solution-header">
+          <div class="pain-solution-label">NEXORA SOLVES THIS</div>
+          <div class="pain-solution-title">3つの課題を、<br>1つのプラットフォームで解決</div>
+        </div>
+        <div class="solution-item">
+          <div class="solution-check">✓</div>
+          <div class="solution-text"><strong>300以上のツールと自動連携。</strong>データサイロを一瞬で解消し、全社データを統合ビューで確認。</div>
+        </div>
+        <div class="solution-item">
+          <div class="solution-check">✓</div>
+          <div class="solution-text"><strong>リアルタイムダッシュボードで手作業ゼロ。</strong>レポートは自動生成。毎朝必要な情報が揃っている状態に。</div>
+        </div>
+        <div class="solution-item">
+          <div class="solution-check">✓</div>
+          <div class="solution-text"><strong>AIが代わりに分析・予測。</strong>専門知識なしでも、次の一手を数字で提示。意思決定のスピードが劇的に変わる。</div>
+        </div>
+        <div class="solution-item">
+          <div class="solution-check">✓</div>
+          <div class="solution-text"><strong>導入最短1日、月額30万円〜。</strong>スモールスタートで効果を確認しながら段階的に拡張可能。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="section" id="product">
+  <div class="section-inner">
+    <div class="eyebrow reveal">PRODUCT TOUR</div>
+    <h2 class="sec-h2 reveal d1">3つの機能で<span class="grad-text">すべてをカバー</span></h2>
+    <p class="sec-desc reveal d2" style="margin-bottom:40px;">データの取得から予測・セキュリティまで、ビジネスインテリジェンスに必要なすべてが揃っています。</p>
+
+    <div class="reveal d2">
+      <div class="product-tabs">
+        <button class="product-tab active" data-tab="analytics"><i data-lucide="bar-chart-2"></i> Analytics</button>
+        <button class="product-tab" data-tab="predict"><i data-lucide="sparkles"></i> Predict</button>
+        <button class="product-tab" data-tab="security"><i data-lucide="shield-check"></i> Security</button>
+      </div>
+    </div>
+
+    <div class="product-panels reveal d3">
+      <!-- ANALYTICS -->
+      <div class="product-panel active" id="tab-analytics">
+        <div class="product-screen">
+          <div class="screen-bar">
+            <div class="screen-dot screen-dot-r"></div>
+            <div class="screen-dot screen-dot-y"></div>
+            <div class="screen-dot screen-dot-g"></div>
+            <div class="screen-title">NEXORA Analytics — Revenue Dashboard</div>
+          </div>
+          <div class="screen-body">
+            <div class="analytics-grid">
+              <div class="analytics-main">
+                <div class="analytics-title">月次売上推移 + AI予測ライン</div>
+                <div class="analytics-line-chart">
+                  <div class="a-bar"      style="height:40%;animation-delay:.1s"></div>
+                  <div class="a-bar"      style="height:55%;animation-delay:.15s"></div>
+                  <div class="a-bar"      style="height:48%;animation-delay:.2s"></div>
+                  <div class="a-bar"      style="height:70%;animation-delay:.25s"></div>
+                  <div class="a-bar"      style="height:62%;animation-delay:.3s"></div>
+                  <div class="a-bar peak" style="height:90%;animation-delay:.35s"></div>
+                  <div class="a-bar"      style="height:75%;animation-delay:.4s"></div>
+                  <div class="a-bar peak" style="height:85%;animation-delay:.45s"></div>
+                  <div class="a-bar"      style="height:68%;animation-delay:.5s"></div>
+                  <div class="a-bar peak" style="height:95%;animation-delay:.55s"></div>
+                  <div class="a-bar"      style="height:80%;animation-delay:.6s"></div>
+                  <div class="a-bar peak" style="height:100%;animation-delay:.65s"></div>
+                </div>
+              </div>
+              <div class="analytics-sidebar">
+                <div class="analytics-side-card">
+                  <div class="a-side-num">+23.4%</div>
+                  <div class="a-side-label">前月比成長率</div>
+                  <div class="a-side-change">↑ 過去最高</div>
+                </div>
+                <div class="analytics-side-card">
+                  <div class="a-side-num">2,847</div>
+                  <div class="a-side-label">接続データソース</div>
+                  <div class="a-side-change">↑ +12 今週</div>
+                </div>
+                <div class="analytics-side-card">
+                  <div class="a-side-num">12ms</div>
+                  <div class="a-side-label">平均応答速度</div>
+                  <div class="a-side-change">✓ SLA達成</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREDICT -->
+      <div class="product-panel" id="tab-predict">
+        <div class="product-screen">
+          <div class="screen-bar">
+            <div class="screen-dot screen-dot-r"></div>
+            <div class="screen-dot screen-dot-y"></div>
+            <div class="screen-dot screen-dot-g"></div>
+            <div class="screen-title">NEXORA Predict — 90日予測レポート</div>
+          </div>
+          <div class="screen-body">
+            <div class="predict-wrap">
+              <div class="predict-card">
+                <div class="predict-label">REVENUE FORECAST</div>
+                <div class="predict-val">+23.4%</div>
+                <div class="predict-sub">90日後の売上予測（信頼度 94%）</div>
+                <div class="predict-bar-wrap"><div class="predict-bar-bg"><div class="predict-bar-fill" style="width:94%"></div></div></div>
+              </div>
+              <div class="predict-card">
+                <div class="predict-label">CHURN RISK</div>
+                <div class="predict-val">8.2%</div>
+                <div class="predict-sub">離反リスク顧客 47社を特定済み</div>
+                <div class="predict-bar-wrap"><div class="predict-bar-bg"><div class="predict-bar-fill" style="width:82%"></div></div></div>
+              </div>
+              <div class="predict-full">
+                <div class="predict-label" style="margin-bottom:12px;">PREDICTION BREAKDOWN</div>
+                <div class="predict-row"><span class="predict-row-label">Q3 売上予測</span><span class="predict-row-val val-g">¥1.24B (+18%)</span></div>
+                <div class="predict-row"><span class="predict-row-label">需要ピーク</span><span class="predict-row-val val-b">8月第3週</span></div>
+                <div class="predict-row"><span class="predict-row-label">在庫リスク</span><span class="predict-row-val val-a">SKU #3271 注意</span></div>
+                <div class="predict-row"><span class="predict-row-label">採用推奨</span><span class="predict-row-val val-g">エンジニア +3名</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECURITY -->
+      <div class="product-panel" id="tab-security">
+        <div class="product-screen">
+          <div class="screen-bar">
+            <div class="screen-dot screen-dot-r"></div>
+            <div class="screen-dot screen-dot-y"></div>
+            <div class="screen-dot screen-dot-g"></div>
+            <div class="screen-title">NEXORA Security — Zero-Trust Monitor</div>
+          </div>
+          <div class="screen-body">
+            <div class="sec-grid">
+              <div class="sec-card">
+                <div class="sec-card-top"><div class="sec-card-title">脅威検知</div><div class="sec-status status-ok">SECURE</div></div>
+                <div class="sec-card-val">0</div>
+                <div class="sec-card-sub">過去30日間の侵害件数</div>
+              </div>
+              <div class="sec-card">
+                <div class="sec-card-top"><div class="sec-card-title">暗号化率</div><div class="sec-status status-ok">AES-256</div></div>
+                <div class="sec-card-val">100%</div>
+                <div class="sec-card-sub">全データの暗号化対応</div>
+              </div>
+              <div class="sec-card">
+                <div class="sec-card-top"><div class="sec-card-title">稼働率</div><div class="sec-status status-ok">SLA達成</div></div>
+                <div class="sec-card-val">99.9%</div>
+                <div class="sec-card-sub">過去12ヶ月の実績</div>
+              </div>
+              <div class="sec-card">
+                <div class="sec-card-top"><div class="sec-card-title">コンプライアンス</div><div class="sec-status status-ok">取得済</div></div>
+                <div class="sec-card-val">ISO/SOC</div>
+                <div class="sec-card-sub">27001 + SOC 2 Type II</div>
+              </div>
+            </div>
+            <div class="sec-log">
+              <div class="sec-log-title">ACCESS LOG — LIVE</div>
+              <div class="sec-log-row"><span class="sec-log-dot" style="background:var(--green)"></span>09:42:11 &nbsp;admin@corp.co.jp — ログイン成功</div>
+              <div class="sec-log-row"><span class="sec-log-dot" style="background:var(--green)"></span>09:41:58 &nbsp;データエクスポート承認 — 監査ログ記録</div>
+              <div class="sec-log-row"><span class="sec-log-dot" style="background:var(--amber)"></span>09:38:02 &nbsp;未知IPからアクセス試行 — ブロック済み</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section class="section cases" id="cases">
+  <div class="section-inner">
+    <div class="eyebrow reveal">CASE STUDIES</div>
+    <h2 class="sec-h2 reveal d1">数字が証明する<span class="grad-text">導入効果</span></h2>
+    <p class="sec-desc reveal d2">各社の具体的な成果をご覧ください。</p>
+
+    <div class="cases-grid">
+      <div class="case-card reveal d1">
+        <div class="case-industry"><i data-lucide="shopping-cart"></i> 小売 / EC</div>
+        <div class="case-company">大手小売チェーン A社</div>
+        <div class="case-metrics">
+          <div class="case-metric">
+            <div class="case-metric-num">42%</div>
+            <div class="case-metric-label">在庫ロス削減</div>
+          </div>
+          <div class="case-metric">
+            <div class="case-metric-num">3ヶ月</div>
+            <div class="case-metric-label">ROI達成期間</div>
+          </div>
+        </div>
+        <p class="case-quote">「需要予測の精度が劇的に向上し、欠品・過剰在庫が激減。物流コストも含め年間2.4億円のコスト削減につながりました。」</p>
+        <div class="case-author">
+          <div class="case-avatar"><img src="avatar_tanaka.png" alt="田中 健一郎"></div>
+          <div>
+            <div class="case-name">田中 健一郎</div>
+            <div class="case-role">COO</div>
+          </div>
+        </div>
+      </div>
+      <div class="case-card reveal d2">
+        <div class="case-industry"><i data-lucide="credit-card"></i> 金融 / フィンテック</div>
+        <div class="case-company">フィンテックスタートアップ B社</div>
+        <div class="case-metrics">
+          <div class="case-metric">
+            <div class="case-metric-num">5日→1日</div>
+            <div class="case-metric-label">レポート作成時間</div>
+          </div>
+          <div class="case-metric">
+            <div class="case-metric-num">98.7%</div>
+            <div class="case-metric-label">リスク予測精度</div>
+          </div>
+        </div>
+        <p class="case-quote">「APIの設計が非常にクリーンで、AWSへの組み込みが驚くほどスムーズ。週次レポートが全自動化され、チームが戦略業務に集中できるようになりました。」</p>
+        <div class="case-author">
+          <div class="case-avatar"><img src="avatar_suzuki.png" alt="鈴木 美沙"></div>
+          <div>
+            <div class="case-name">鈴木 美沙</div>
+            <div class="case-role">CTO</div>
+          </div>
+        </div>
+      </div>
+      <div class="case-card reveal d3">
+        <div class="case-industry"><i data-lucide="heart-pulse"></i> 医療 / ヘルスケア</div>
+        <div class="case-company">医療法人グループ C社</div>
+        <div class="case-metrics">
+          <div class="case-metric">
+            <div class="case-metric-num">31%</div>
+            <div class="case-metric-label">業務コスト削減</div>
+          </div>
+          <div class="case-metric">
+            <div class="case-metric-num">1日</div>
+            <div class="case-metric-label">導入所要時間</div>
+          </div>
+        </div>
+        <p class="case-quote">「セキュリティ要件が非常に厳しい医療データでも問題なく稼働。SOC 2認証の安心感が院内の信頼獲得にもつながりました。」</p>
+        <div class="case-author">
+          <div class="case-avatar"><img src="avatar_yamamoto.png" alt="山本 裕二"></div>
+          <div>
+            <div class="case-name">山本 裕二</div>
+            <div class="case-role">DX推進部長</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section team" id="team">
+  <div class="section-inner">
+    <div class="eyebrow reveal">OUR TEAM</div>
+    <h2 class="sec-h2 reveal d1">NEXORAを<span class="grad-text">動かすチーム</span></h2>
+    <p class="sec-desc reveal d2">東京大学・スタンフォード出身のAIエンジニアと、大手IT企業でのDX推進経験を持つビジネスリーダーが2019年に共同創業。</p>
+
+    <div class="team-grid">
+      <div class="team-card reveal d1">
+        <div class="team-photo">
+          <img src="team_ceo.png" alt="中村 拓海">
+          <div class="team-photo-overlay"></div>
+        </div>
+        <div class="team-info">
+          <div class="team-role">Founder & CEO</div>
+          <div class="team-name">中村 拓海</div>
+          <p class="team-bio">東京大学大学院情報工学専攻修了。前職のメガベンチャーにてAI事業部を立ち上げ、累計売上100億円超を達成。2019年にNEXORAを創業。</p>
+          <div class="team-tags">
+            <span class="team-tag">AI STRATEGY</span>
+            <span class="team-tag">BUSINESS DEV</span>
+            <span class="team-tag">東京大学</span>
+          </div>
+        </div>
+      </div>
+      <div class="team-card reveal d2">
+        <div class="team-photo">
+          <img src="team_cto.png" alt="渡辺 竜也">
+          <div class="team-photo-overlay"></div>
+        </div>
+        <div class="team-info">
+          <div class="team-role">Co-founder & CTO</div>
+          <div class="team-name">渡辺 竜也</div>
+          <p class="team-bio">スタンフォード大学CS修士。Google・Amazon勤務を経てNEXORAの技術基盤を一から設計。特許取得済みのリアルタイム予測エンジンを開発。</p>
+          <div class="team-tags">
+            <span class="team-tag">MACHINE LEARNING</span>
+            <span class="team-tag">INFRA</span>
+            <span class="team-tag">STANFORD</span>
+          </div>
+        </div>
+      </div>
+      <div class="team-card reveal d3">
+        <div class="team-photo">
+          <img src="team_cpo.png" alt="林 麻衣">
+          <div class="team-photo-overlay"></div>
+        </div>
+        <div class="team-info">
+          <div class="team-role">CPO</div>
+          <div class="team-name">林 麻衣</div>
+          <p class="team-bio">慶應義塾大学SFC卒。前職の大手SIerにて500社のDX支援を経験。ユーザーファーストなプロダクト設計で顧客満足度97%を達成。</p>
+          <div class="team-tags">
+            <span class="team-tag">PRODUCT DESIGN</span>
+            <span class="team-tag">UX</span>
+            <span class="team-tag">慶應SFC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <div class="eyebrow reveal">PRICING</div>
+    <h2 class="sec-h2 reveal d1">シンプルな<span class="grad-text">料金プラン</span></h2>
+    <p class="sec-desc reveal d2">すべてのプランに14日間の無料トライアルが含まれます。途中でいつでもアップグレード可能。</p>
+
+    <div class="pricing-grid">
+      <div class="price-card reveal d1">
+        <div class="price-plan">STARTER</div>
+        <div class="price-num">¥30<span class="price-unit">万円 / 月</span></div>
+        <p class="price-desc">1部門からのスモールスタートに最適。コアの分析機能をすぐに体験できます。</p>
+        <div class="price-features">
+          <div class="price-feature"><span class="price-feature-check">✓</span> データソース連携 最大50件</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> リアルタイムダッシュボード</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> 基本レポート自動生成</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> メールサポート</div>
+          <div class="price-feature dim"><span class="price-feature-x">✕</span> AI予測エンジン</div>
+          <div class="price-feature dim"><span class="price-feature-x">✕</span> カスタムアラート</div>
+        </div>
+        <a href="#" class="price-cta price-cta-outline">無料で試す</a>
+      </div>
+
+      <div class="price-card featured reveal d2">
+        <div class="price-badge">最も人気</div>
+        <div class="price-plan">GROWTH</div>
+        <div class="price-num">¥80<span class="price-unit">万円 / 月</span></div>
+        <p class="price-desc">成長期の企業に。AI予測と高度な自動化で意思決定を次のレベルへ引き上げます。</p>
+        <div class="price-features">
+          <div class="price-feature"><span class="price-feature-check">✓</span> データソース連携 最大300件</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> AI予測エンジン（90日予測）</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> カスタムアラート・自動レポート</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> Slack / Teams 連携</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> 専任サポートマネージャー</div>
+          <div class="price-feature dim"><span class="price-feature-x">✕</span> オンプレミス対応</div>
+        </div>
+        <a href="#" class="price-cta price-cta-solid">無料で試す</a>
+      </div>
+
+      <div class="price-card reveal d3">
+        <div class="price-plan">ENTERPRISE</div>
+        <div class="price-num">要<span class="price-unit">お問い合わせ</span></div>
+        <p class="price-desc">大規模組織・高セキュリティ要件の企業向け。専任チームがフルサポートします。</p>
+        <div class="price-features">
+          <div class="price-feature"><span class="price-feature-check">✓</span> データソース連携 無制限</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> 全機能フルアクセス</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> オンプレミス / プライベートクラウド</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> SLA 99.99% 保証</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> 24時間365日電話サポート</div>
+          <div class="price-feature"><span class="price-feature-check">✓</span> カスタム開発・API設計支援</div>
+        </div>
+        <a href="#cta" class="price-cta price-cta-outline">営業に相談する</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq" id="faq">
+  <div class="section-inner">
+    <div class="faq-cols">
+      <div class="reveal">
+        <div class="eyebrow">FAQ</div>
+        <div class="faq-side-title">よくある<br><span class="grad-text">ご質問</span></div>
+        <p class="faq-side-desc">その他のご質問はお気軽にお問い合わせください。専任チームが対応します。</p>
+        <a href="#cta" class="faq-contact">サポートに問い合わせる →</a>
+      </div>
+      <div class="faq-list reveal d2">
+        <div class="faq-item">
+          <button class="faq-q">導入までどれくらいの期間がかかりますか？<span class="faq-icon">+</span></button>
+          <div class="faq-a"><p>標準的な導入期間は1〜4週間です。既存システムとのAPI連携がある場合でも、専任の導入エンジニアがサポートし、最短1日での稼働を実現した事例があります。</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">既存のCRM・ERPとの連携は可能ですか？<span class="faq-icon">+</span></button>
+          <div class="faq-a"><p>Salesforce、HubSpot、SAP、kintoneなど300以上のSaaSに対応したコネクタを標準提供しています。対応外のシステムはカスタムAPI連携で対応可能です。</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">セキュリティやデータの取り扱いはどうなっていますか？<span class="faq-icon">+</span></button>
+          <div class="faq-a"><p>ISO 27001・SOC 2 Type IIを取得済みです。データはAES-256で暗号化され、国内データセンター（東京・大阪）で管理されます。個人情報保護法・GDPRにも対応しています。</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">スモールスタートはできますか？<span class="faq-icon">+</span></button>
+          <div class="faq-a"><p>はい。STARTERプランは月額30万円〜で1部門からの導入が可能です。成果を確認しながら段階的にプランを拡張できます。</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">無料トライアルの内容を教えてください。<span class="faq-icon">+</span></button>
+          <div class="faq-a"><p>14日間、GROWTHプランの全機能を無料でお試しいただけます。クレジットカード不要で、期間終了後に自動課金されることはありません。</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta-section" id="cta">
+  <div class="cta-photo-bg"></div>
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="cta-left">
+      <div class="cta-eyebrow reveal">GET STARTED TODAY</div>
+      <h2 class="cta-h2 reveal d1">
+        今すぐ<span class="grad-text">14日間</span><br>
+        無料で試す
+      </h2>
+      <p class="cta-sub reveal d2">
+        クレジットカード不要。セットアップは最短30分。
+        500社以上が選んだプラットフォームを、今すぐ体験してください。
+      </p>
+      <div class="cta-actions reveal d3">
+        <a href="#" class="btn-primary">無料トライアルを開始 →</a>
+        <a href="#" class="btn-ghost">デモを予約する</a>
+      </div>
+    </div>
+    <div class="cta-right reveal d2">
+      <div class="cta-feature">
+        <div class="cta-feature-icon"><i data-lucide="zap"></i></div>
+        <div>
+          <div class="cta-feature-title">最短1日で導入完了</div>
+          <div class="cta-feature-desc">専任エンジニアがセットアップをフルサポート</div>
+        </div>
+      </div>
+      <div class="cta-feature">
+        <div class="cta-feature-icon"><i data-lucide="refresh-cw"></i></div>
+        <div>
+          <div class="cta-feature-title">300+ ツールと自動連携</div>
+          <div class="cta-feature-desc">既存環境を変えずにそのまま導入できます</div>
+        </div>
+      </div>
+      <div class="cta-feature">
+        <div class="cta-feature-icon"><i data-lucide="shield-check"></i></div>
+        <div>
+          <div class="cta-feature-title">ISO 27001 / SOC 2 取得済み</div>
+          <div class="cta-feature-desc">金融・医療・官公庁での導入実績あり</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <span class="footer-logo">NEXORA</span>
+        <p class="footer-desc">AIで企業の意思決定を変革する。<br>東京発、グローバルへ。</p>
+        <div class="footer-social">
+          <a href="#" class="footer-social-btn"><i data-lucide="twitter"></i></a>
+          <a href="#" class="footer-social-btn"><i data-lucide="linkedin"></i></a>
+          <a href="#" class="footer-social-btn"><i data-lucide="github"></i></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="#">Analytics</a></li>
+          <li><a href="#">Predictive AI</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">API Docs</a></li>
+          <li><a href="#">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">会社情報</a></li>
+          <li><a href="#">採用情報</a></li>
+          <li><a href="#">プレスリリース</a></li>
+          <li><a href="#">パートナー</a></li>
+          <li><a href="#">ブログ</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="#">プライバシーポリシー</a></li>
+          <li><a href="#">利用規約</a></li>
+          <li><a href="#">セキュリティ</a></li>
+          <li><a href="#">Cookie設定</a></li>
+          <li><a href="#">お問い合わせ</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 NEXORA Inc. All rights reserved.</div>
+      <div class="footer-address">〒150-0001 東京都渋谷区神宮前1-1-1 NEXORA TOWER 22F</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── OPENING ANIMATION ──
+  (function () {
+    const op    = document.getElementById('op');
+    const rain  = document.getElementById('opRain');
+    const logo  = document.getElementById('opLogo');
+    const scan  = document.getElementById('opScan');
+    const flash = document.getElementById('opFlash');
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    document.body.style.overflow = 'hidden';
+
+    // データ素材 [text, colorClass, weight]
+    const pool = [
+      // 値・メトリクス（多め）
+      ['99.7%',           'cb', 3], ['12ms',             'cg', 4],
+      ['2,847',           'cb', 3], ['48,200/s',         'ca', 2],
+      ['94.2%',           'cg', 3], ['3.8 TB',           'cb', 2],
+      ['1.2M',            'ca', 3], ['99.99%',           'cg', 2],
+      ['18,340',          'cd', 3], ['87.4%',            'ca', 3],
+      ['0.997',           'cb', 3], ['0.9941',           'cb', 2],
+      ['p99: 12ms',       'cg', 3], ['p50: 8ms',         'cd', 3],
+      ['loss: 0.002',     'cd', 2], ['epoch: 240',       'cd', 2],
+      ['batch: 32',       'cd', 3], ['14.2 GB',          'cb', 2],
+      ['fp16',            'cd', 3], ['v4.2.1',           'cw', 3],
+      ['auc: 0.999',      'cb', 2], ['f1: 0.994',        'cb', 2],
+      // コードフラグメント
+      ['await predict()', 'cd', 2], ['import NX',        'cd', 2],
+      ['model.forward()', 'cd', 2], ['.load("gpt-nx")',  'cd', 2],
+      ['batch_size=32',   'cd', 2], ['precision="fp16"', 'cd', 2],
+      ['ttl: 3600',       'cd', 2], ['top_k: 50',        'cd', 2],
+      ['region: ap-ne',   'cd', 2], ['port: 443',        'cd', 1],
+      // hex / hash
+      ['0xf4a2c1b8',     'cd', 3], ['0x3e7a9b2c',       'cd', 2],
+      ['0xa1d8f3e2',     'cd', 2], ['#2563eb',           'cb', 2],
+      // ステータス
+      ['✓ verified',     'cg', 2], ['● ONLINE',          'cg', 2],
+      ['READY',          'cw', 2], ['SLA: 99.9%',        'cg', 1],
+      ['encrypt ✓',      'cg', 2], ['cluster_ok',        'cg', 2],
+      ['GPU: OK',        'cg', 2], ['cache ✓',           'cg', 2],
+      // JSON片
+      ['{ ok: true }',   'ca', 2], ['[ 32, 64, 128 ]',  'ca', 1],
+      ['{ n: 2847 }',    'ca', 2], ['"status":"ok"',     'ca', 2],
+    ];
+
+    // weightに応じて展開
+    const weighted = pool.flatMap(([t, c, w]) => Array(w).fill([t, c]));
+
+    const colors = { cb: .55, cg: .5, ca: .5, cw: .65, cd: .35 };
+
+    let timer = null;
+
+    function spawnDrop() {
+      const [text, cls] = weighted[Math.floor(Math.random() * weighted.length)];
+      const el = document.createElement('div');
+      el.className = `op-drop ${cls}`;
+      el.textContent = text;
+
+      const size   = 9 + Math.random() * 8;           // 9〜17px
+      const opBase = colors[cls];
+      const op     = (opBase * (.5 + Math.random() * .8)).toFixed(2); // ランダム透明度
+      const dur    = 1.8 + Math.random() * 2.8;       // 1.8〜4.6s
+      const left   = (Math.random() * 98).toFixed(1); // 0〜98%
+
+      el.style.cssText = `
+        left:${left}%;
+        font-size:${size.toFixed(1)}px;
+        animation-duration:${dur.toFixed(2)}s;
+        --op:${op};
+      `;
+      rain.appendChild(el);
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+    }
+
+    function startRain(interval) {
+      clearInterval(timer);
+      timer = setInterval(spawnDrop, interval);
+    }
+
+    async function run() {
+      // 最初は少量からスタートして密度を上げる
+      startRain(120);
+      await sleep(300);
+      logo.classList.add('in');
+
+      await sleep(600);
+      startRain(70);   // 中密度
+
+      await sleep(1200);
+      startRain(45);   // 高密度
+
+      await sleep(1400);
+      startRain(28);   // スキャン直前に最大密度
+
+      await sleep(400);
+
+      // スキャン
+      scan.classList.add('go');
+      await sleep(700);
+
+      clearInterval(timer);
+
+      // フラッシュ → LP
+      flash.classList.add('go');
+      await sleep(200);
+      op.classList.add('done');
+      document.body.style.overflow = '';
+      await sleep(460);
+      op.remove();
+    }
+
+    run();
+  })();
+
+  // REVEAL
+  const ro = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target);} }), {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+  // PRODUCT TABS
+  document.querySelectorAll('.product-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.product-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // FAQ
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!open) item.classList.add('open');
+    });
+  });
+
+  // ICONS
+  lucide.createIcons();
+
+  // NAV
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = scrollY > 60 ? 'rgba(255,255,255,.98)' : 'rgba(255,255,255,.92)';
+  }, {passive:true});
+</script>
+</body>
+</html>
