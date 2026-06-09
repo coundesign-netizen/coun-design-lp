@@ -6,7 +6,7 @@
   <title>pâtisserie éclat | パティスリー エクラ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500&family=Noto+Sans+JP:wght@300;400&family=Noto+Serif+JP:wght@200;300&display=swap" rel="stylesheet">
 
   <style>
   /* ==============================================
@@ -15,19 +15,30 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
+  /* Subtle grain — Korean luxury texture */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9996;
+    opacity: .028;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+  }
+
   :root {
-    --cream:   #f8f5ef;
-    --cream2:  #eeeae1;
-    --dark:    #17140d;
-    --gold:    #c4a46b;
-    --gold-l:  #d8bc8c;
-    --gold-d:  #8c7248;
-    --muted:   #8a8278;
-    --faint:   #c4bdb4;
-    --border:  rgba(196,164,107,0.18);
+    --cream:   #F8F6F3;
+    --cream2:  #F0EBE6;
+    --dark:    #0C0A09;
+    --gold:    #B5857C;
+    --gold-l:  #D0AAA3;
+    --gold-d:  #7C4E48;
+    --muted:   #7A7470;
+    --faint:   #C0B8B5;
+    --border:  rgba(12,10,9,0.09);
     --serif:   'Cormorant Garamond', 'Times New Roman', serif;
     --ui:      'DM Sans', 'Noto Sans JP', sans-serif;
     --jp:      'Noto Sans JP', sans-serif;
+    --jp-serif:'Noto Serif JP', serif;
   }
 
   body {
@@ -53,7 +64,6 @@
     pointer-events: none;
     z-index: 9999;
     will-change: transform;
-    opacity: 0;
   }
   .c-dot {
     width: 5px; height: 5px;
@@ -63,7 +73,7 @@
   }
   .c-ring {
     width: 36px; height: 36px;
-    border: 1px solid rgba(196,164,107,0.6);
+    border: 1px solid rgba(181,133,124,0.5);
     margin: -18px 0 0 -18px;
     transition: width 0.3s, height 0.3s, margin 0.3s, border-color 0.3s, opacity 0.3s;
   }
@@ -122,7 +132,7 @@
     font-family: var(--ui);
     font-size: 10px;
     font-weight: 400;
-    letter-spacing: 0.38em;
+    letter-spacing: 0.42em;
     text-transform: uppercase;
     color: var(--gold);
   }
@@ -140,6 +150,7 @@
     font-weight: 300;
     line-height: 1.12;
     letter-spacing: 0.01em;
+    font-feature-settings: "liga" 1, "onum" 1;
   }
   .u-title i { font-style: italic; color: var(--gold-d); }
 
@@ -191,7 +202,7 @@
   }
   .header.scrolled {
     padding: 18px 52px;
-    background: rgba(248,245,239,0.9);
+    background: rgba(248,246,243,0.94);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-color: var(--border);
@@ -241,15 +252,18 @@
      HERO
   =============================================== */
   .hero {
-    position: relative;
     height: 100svh;
     min-height: 700px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    display: grid;
+    grid-template-columns: 1fr min(40vw, 520px);
   }
 
+  /* Left: full-bleed photo */
+  .hero__photo {
+    position: relative;
+    overflow: hidden;
+  }
   .hero__bg {
     position: absolute;
     inset: 0;
@@ -258,121 +272,149 @@
   .hero__bg .ph {
     width: 100%; height: 115%;
     top: -7.5%;
-    background: linear-gradient(160deg, #d8d0c4 0%, #c4b8a8 40%, #b0a090 100%);
+    background: linear-gradient(160deg, #DDD0CC 0%, #CBBCB8 40%, #B8A8A4 100%);
   }
-
+  /* Very subtle edge vignette only */
   .hero__overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
-      to top,
-      rgba(23,20,13,0.72) 0%,
-      rgba(23,20,13,0.28) 45%,
-      rgba(23,20,13,0.04) 100%
+      to right,
+      rgba(12,10,9,0.0) 60%,
+      rgba(12,10,9,0.18) 100%
     );
-  }
-
-  .hero__watermark {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -44%);
-    font-family: var(--serif);
-    font-size: clamp(100px, 18vw, 240px);
-    font-weight: 300;
-    font-style: italic;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.07);
-    white-space: nowrap;
-    letter-spacing: -0.02em;
     pointer-events: none;
-    user-select: none;
+  }
+  /* Floating year badge on photo */
+  .hero__badge {
+    position: absolute;
+    bottom: 52px;
+    left: 52px;
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero__badge::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: rgba(255,255,255,0.4);
+    flex-shrink: 0;
   }
 
-  .hero__content {
+  /* Right: white panel */
+  .hero__panel {
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 64px 80px 56px;
     position: relative;
-    z-index: 2;
-    padding: 0 80px 72px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: flex-end;
-    gap: 0 60px;
+    border-left: 1px solid rgba(12,10,9,0.07);
   }
-
-  .hero__left {}
 
   .hero__eyebrow {
     font-family: var(--ui);
-    font-size: 10px;
-    letter-spacing: 0.4em;
+    font-size: 9px;
+    letter-spacing: 0.42em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-    margin-bottom: 20px;
+    color: var(--faint);
+    margin-bottom: 36px;
     opacity: 0;
   }
 
   .hero__title {
     font-family: var(--serif);
-    font-size: clamp(52px, 8.5vw, 112px);
+    font-size: clamp(44px, 5.5vw, 80px);
     font-weight: 300;
-    line-height: 0.98;
-    letter-spacing: 0.03em;
-    color: #fff;
-    margin-bottom: 28px;
+    line-height: 1.02;
+    letter-spacing: 0.02em;
+    color: var(--dark);
+    margin-bottom: 0;
     opacity: 0;
+    font-feature-settings: "liga" 1;
   }
   .hero__title em {
     display: block;
     font-style: italic;
-    color: var(--gold-l);
+    color: var(--gold);
   }
+
+  /* thin rule between title and tag */
+  .hero__rule {
+    width: 32px; height: 1px;
+    background: var(--gold);
+    margin: 32px 0;
+    opacity: 0;
+    transition: opacity .8s ease .5s, width .8s ease .5s;
+  }
+  .hero__rule.visible { opacity: 1; }
 
   .hero__tag {
     font-family: var(--jp);
-    font-size: clamp(13px, 1.4vw, 16px);
+    font-size: 12px;
     font-weight: 300;
-    letter-spacing: 0.12em;
-    color: rgba(255,255,255,0.55);
-    line-height: 1.9;
-    border-left: 1px solid rgba(196,164,107,0.5);
-    padding-left: 20px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    line-height: 2.1;
     opacity: 0;
   }
 
+  /* Scroll indicator — bottom of panel */
   .hero__right {
+    position: absolute;
+    bottom: 52px;
+    left: 56px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     opacity: 0;
   }
-  .hero__scroll-label {
-    writing-mode: vertical-rl;
-    font-family: var(--ui);
-    font-size: 9px;
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.35);
-  }
   .hero__scroll-line {
-    width: 1px;
-    height: 64px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
+    width: 40px; height: 1px;
+    background: var(--gold);
+    animation: scrollPulse 2.2s ease-in-out infinite;
   }
   @keyframes scrollPulse {
-    0%,100% { opacity: 0.35; }
-    50% { opacity: 0.8; }
+    0%,100% { opacity: 0.4; transform: scaleX(1); }
+    50%      { opacity: 1;   transform: scaleX(1.2); }
+  }
+  .hero__scroll-label {
+    font-family: var(--ui);
+    font-size: 9px;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .hero {
+      grid-template-columns: 1fr;
+      grid-template-rows: 55svh 1fr;
+    }
+    .hero__panel {
+      padding: 48px 32px 80px;
+      border-left: none;
+      border-top: 1px solid rgba(12,10,9,0.07);
+      justify-content: flex-start;
+    }
+    .hero__badge { display: none; }
+    .hero__right { bottom: 28px; left: 32px; }
   }
 
   /* ==============================================
      MARQUEE
   =============================================== */
   .marquee {
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid rgba(12,10,9,0.07);
+    border-bottom: 1px solid rgba(12,10,9,0.07);
     overflow: hidden;
-    background: var(--cream);
+    background: #FFFFFF;
   }
   .marquee__track {
     display: flex;
@@ -419,7 +461,7 @@
   }
   .story__img-main .ph {
     width: 100%; height: 100%;
-    background: linear-gradient(150deg, #ddd5c8 0%, #c8bfb0 100%);
+    background: linear-gradient(150deg, #DECEC8 0%, #CCBCB8 100%);
     transition: transform 1.2s cubic-bezier(0.22,1,0.36,1);
   }
   .story__visual:hover .story__img-main .ph { transform: scale(1.03); }
@@ -437,7 +479,7 @@
   .story__text .u-label { margin-bottom: 32px; }
 
   .story__title {
-    font-family: var(--serif);
+    font-family: var(--jp-serif);
     font-size: clamp(22px, 2.4vw, 34px);
     font-weight: 300;
     line-height: 1.55;
@@ -456,7 +498,7 @@
 
   .story__body {
     font-size: 13px;
-    color: var(--muted);
+    color: #5A5450;
     line-height: 2.2;
     letter-spacing: 0.07em;
   }
@@ -489,7 +531,7 @@
   =============================================== */
   .signature {
     padding: 140px 0;
-    background: var(--cream2);
+    background: #FFFFFF;
   }
 
   .signature__head {
@@ -499,6 +541,7 @@
     margin-bottom: 72px;
   }
   .signature__head .u-label { margin-bottom: 16px; }
+  .signature__head .u-title { font-size: clamp(24px, 3vw, 42px); }
 
   .signature__link {
     font-family: var(--ui);
@@ -525,7 +568,7 @@
   .signature__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 3px;
+    gap: 2px;
   }
 
   .signature__item {
@@ -542,15 +585,15 @@
     width: 100%; height: 100%;
     transition: transform 0.9s cubic-bezier(0.22,1,0.36,1);
   }
-  .signature__item:nth-child(1) .ph { background: linear-gradient(145deg, #e0d6ca, #ccc0b0); }
-  .signature__item:nth-child(2) .ph { background: linear-gradient(145deg, #ddd8d0, #c8c0b4); }
-  .signature__item:nth-child(3) .ph { background: linear-gradient(145deg, #e0dcd2, #cccabc); }
+  .signature__item:nth-child(1) .ph { background: linear-gradient(145deg, #E4D4D0, #CEBCB8); }
+  .signature__item:nth-child(2) .ph { background: linear-gradient(145deg, #E0D4CE, #CCBCB8); }
+  .signature__item:nth-child(3) .ph { background: linear-gradient(145deg, #E2D4CE, #D0BCBA); }
   .signature__item:hover .signature__item-img .ph { transform: scale(1.05); }
 
   .signature__item-hover {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(23,20,13,0.65) 0%, rgba(23,20,13,0.0) 50%);
+    background: linear-gradient(to top, rgba(12,10,9,0.62) 0%, rgba(12,10,9,0.0) 50%);
     opacity: 0;
     transition: opacity 0.5s;
   }
@@ -558,8 +601,8 @@
 
   .signature__item-info {
     padding: 24px 24px 32px;
-    background: var(--cream);
-    border-top: 1px solid var(--border);
+    background: #FFFFFF;
+    border-top: 1px solid rgba(12,10,9,0.07);
   }
   .signature__item-num {
     font-family: var(--serif);
@@ -614,7 +657,7 @@
     font-weight: 300;
     font-style: italic;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(196,164,107,0.08);
+    -webkit-text-stroke: 1px rgba(181,133,124,0.07);
     white-space: nowrap;
     letter-spacing: -0.02em;
     pointer-events: none;
@@ -626,7 +669,7 @@
   .concept__rule {
     width: 1px;
     height: 56px;
-    background: rgba(196,164,107,0.3);
+    background: rgba(181,133,124,0.22);
     margin: 0 auto 52px;
   }
 
@@ -635,7 +678,7 @@
     font-size: clamp(28px, 4.5vw, 58px);
     font-weight: 300;
     font-style: italic;
-    color: rgba(255,255,255,0.88);
+    color: rgba(255,255,255,0.92);
     line-height: 1.55;
     letter-spacing: 0.02em;
     max-width: 820px;
@@ -648,14 +691,14 @@
     font-size: 13px;
     font-weight: 300;
     letter-spacing: 0.18em;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.32);
     line-height: 2;
   }
 
   .concept__rule-b {
     width: 1px;
     height: 56px;
-    background: rgba(196,164,107,0.3);
+    background: rgba(181,133,124,0.22);
     margin: 52px auto 0;
   }
 
@@ -686,7 +729,7 @@
     display: grid;
     grid-template-columns: 1.1fr 1fr;
     grid-template-rows: auto auto;
-    gap: 3px;
+    gap: 2px;
   }
 
   .seasonal__big {
@@ -942,7 +985,7 @@
   }
   .reserve__btn:hover {
     background: var(--gold-d);
-    letter-spacing: 0.38em;
+    letter-spacing: 0.42em;
   }
 
   .reserve__right {}
@@ -1034,7 +1077,7 @@
   .footer__col-title {
     font-family: var(--ui);
     font-size: 9px;
-    letter-spacing: 0.38em;
+    letter-spacing: 0.42em;
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 24px;
@@ -1188,26 +1231,29 @@
      Hero
 ============================================ -->
 <section class="hero" id="hero">
-  <div class="hero__bg" id="heroBg">
-    <div class="ph" id="heroBgPh"><img src="images/hero-bg.jpg" alt="パティスリー エクラ 店内"></div>
-  </div>
-  <div class="hero__overlay"></div>
-  <p class="hero__watermark" aria-hidden="true">éclat</p>
-
-  <div class="hero__content">
-    <div class="hero__left">
-      <p class="hero__eyebrow" id="heroEyebrow">Paris · Tokyo · Since 2018</p>
-      <h1 class="hero__title" id="heroTitle">
-        pâtisserie<br><em>éclat</em>
-      </h1>
-      <p class="hero__tag" id="heroTag">
-        光のように輝く、一瞬の喜びを。<br>
-        フランスの技法と日本の素材が出会う場所。
-      </p>
+  <!-- Left: photo -->
+  <div class="hero__photo">
+    <div class="hero__bg" id="heroBg">
+      <div class="ph" id="heroBgPh"><img src="images/hero-bg.jpg" alt="パティスリー エクラ 店内"></div>
     </div>
+    <div class="hero__overlay"></div>
+    <p class="hero__badge" aria-hidden="true">Paris · Tokyo · Since 2018</p>
+  </div>
+
+  <!-- Right: white panel -->
+  <div class="hero__panel">
+    <p class="hero__eyebrow" id="heroEyebrow">Pâtisserie</p>
+    <h1 class="hero__title" id="heroTitle">
+      pâtisserie<br><em>éclat</em>
+    </h1>
+    <div class="hero__rule" id="heroRule"></div>
+    <p class="hero__tag" id="heroTag">
+      光のように輝く、一瞬の喜びを。<br>
+      フランスの技法と、日本の素材が出会う場所。
+    </p>
     <div class="hero__right" id="heroRight">
-      <p class="hero__scroll-label">Scroll</p>
       <div class="hero__scroll-line"></div>
+      <p class="hero__scroll-label">Scroll</p>
     </div>
   </div>
 </section>
@@ -1277,7 +1323,7 @@
       <div>
         <p class="u-label">Nos Signatures</p>
         <h2 class="u-title" style="margin-top:16px;">
-          看板菓子、<i>三選。</i>
+          職人が贈る、<i>三つの代表作。</i>
         </h2>
       </div>
       <a href="#" class="signature__link">Full Menu</a>
@@ -1588,13 +1634,7 @@ const dot  = document.getElementById('cDot');
 const ring = document.getElementById('cRing');
 let mx = 0, my = 0, rx = 0, ry = 0;
 
-let cursorReady = false;
 document.addEventListener('mousemove', e => {
-  if (!cursorReady) {
-    dot.style.opacity = '1';
-    ring.style.opacity = '1';
-    cursorReady = true;
-  }
   mx = e.clientX; my = e.clientY;
   dot.style.transform = `translate(${mx}px,${my}px)`;
 });
@@ -1620,9 +1660,10 @@ setTimeout(() => {
   /* Hero reveal */
   const ORDER = [
     { el: document.getElementById('heroEyebrow'), delay: 0 },
-    { el: document.getElementById('heroTitle'),   delay: 180 },
-    { el: document.getElementById('heroTag'),     delay: 360 },
-    { el: document.getElementById('heroRight'),   delay: 540 },
+    { el: document.getElementById('heroTitle'),   delay: 160 },
+    { el: document.getElementById('heroRule'),    delay: 340 },
+    { el: document.getElementById('heroTag'),     delay: 440 },
+    { el: document.getElementById('heroRight'),   delay: 620 },
   ];
   ORDER.forEach(({ el, delay }) => {
     setTimeout(() => {
