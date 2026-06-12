@@ -859,7 +859,7 @@ ul, ol { list-style: none; }
   .section__desc { font-size: 11px; }
 
   .about__values { grid-template-columns: 1fr; }
-  .about__intro { font-size: 9px !important; }
+  .about__intro { font-size: 9px !important; line-height: 1.8; }
   .about__value-title { font-size: 11px; }
   .about__value-body { font-size: 10px; }
 
