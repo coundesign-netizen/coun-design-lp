@@ -829,7 +829,7 @@ ul, ol { list-style: none; }
   :root { --section-gap: 72px; --header-h: 52px; }
   .container, .header__inner { padding: 0 20px; }
 
-  html { font-size: 13px; }
+  html { font-size: 11px; }
 
   .header__nav {
     position: fixed; top: 0; right: -100%;
@@ -842,30 +842,30 @@ ul, ol { list-style: none; }
   }
   .header__nav.open { right: 0; }
   .header__nav-list { flex-direction: column; align-items: center; gap: 28px; }
-  .header__nav-list a { font-size: 18px; }
+  .header__nav-list a { font-size: 15px; }
   .nav__en { display: none; }
   .nav__ja { display: block; }
   .header__hamburger { display: flex; z-index: 100; }
 
-  .fv__sub { font-size: 10px; }
-  .fv__title { font-size: clamp(18px, 5.5vw, 24px); }
-  .fv__desc { font-size: 12px; }
-  .fv__stat-num { font-size: 16px; }
+  .fv__sub { font-size: 8px; }
+  .fv__title { font-size: clamp(15px, 4.5vw, 20px); }
+  .fv__desc { font-size: 10px; }
+  .fv__stat-num { font-size: 13px; }
   .fv__content { padding: 0 20px; }
   .fv__bottom { gap: 24px; flex-wrap: wrap; }
 
-  .section__en { font-size: 10px; }
-  .section__title { font-size: clamp(20px, 5vw, 26px); }
+  .section__en { font-size: 8px; }
+  .section__title { font-size: clamp(16px, 4vw, 20px); }
 
   .about__values { grid-template-columns: 1fr; }
-  .about__intro { font-size: 12px; }
-  .about__value-title { font-size: 13px; }
-  .about__value-body { font-size: 12px; }
+  .about__intro { font-size: 10px; }
+  .about__value-title { font-size: 11px; }
+  .about__value-body { font-size: 10px; }
 
-  .target__item { font-size: 12px; }
+  .target__item { font-size: 10px; }
 
-  .flow__step { font-size: 13px; }
-  .flow__desc { font-size: 12px; }
+  .flow__step { font-size: 11px; }
+  .flow__desc { font-size: 10px; }
 
   .works__grid, .works__grid--2col, .works__grid--3col {
     display: flex; flex-direction: row;
