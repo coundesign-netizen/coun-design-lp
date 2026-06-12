@@ -8,6 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    .works__category { margin-bottom: 48px; }
+    .works__category-head { margin-bottom: 16px; }
+    .works__category-title { font-size: 15px; font-weight: 600; letter-spacing: 0.05em; color: #1d1d1f; margin-bottom: 2px; }
+    .works__category-desc { font-size: 12px; color: #999; letter-spacing: 0.04em; }
+  </style>
 </head>
 <body>
 
@@ -164,49 +170,77 @@
           <p class="section__en">Works</p>
           <h2 class="section__title">制作実績</h2>
         </div>
-        <div class="works__grid works__grid--2col works__grid--3col">
-          <article class="works__item works__item--lp" data-lp="works/nexora/20260604_ベンチャーLP_NEXORA.html" data-title="NEXORA">
-            <div class="works__thumb">
-              <img src="phot/nexora-hero.jpg" alt="NEXORA LP" loading="lazy">
-              <div class="works__overlay"><span>LPを見る →</span></div>
-            </div>
-            <div class="works__info">
-              <p class="works__tag">ベンチャー / LP</p>
-              <h3 class="works__name">NEXORA</h3>
-            </div>
-          </article>
-          <article class="works__item works__item--lp" data-lp="works/yasuragi/index.html" data-title="やすらぎの里">
-            <div class="works__thumb">
-              <img src="phot/yasuragi-hero.jpg" alt="やすらぎの里 LP" loading="lazy">
-              <div class="works__overlay"><span>LPを見る →</span></div>
-            </div>
-            <div class="works__info">
-              <p class="works__tag">介護施設 / LP</p>
-              <h3 class="works__name">やすらぎの里</h3>
-            </div>
-          </article>
-          <article class="works__item works__item--lp" data-lp="works/eclat/index.html" data-title="pâtisserie éclat">
-            <div class="works__thumb">
-              <img src="phot/eclat-hero.jpg" alt="pâtisserie éclat LP" loading="lazy">
-              <div class="works__overlay"><span>LPを見る →</span></div>
-            </div>
-            <div class="works__info">
-              <p class="works__tag">パティスリー / LP</p>
-              <h3 class="works__name">pâtisserie éclat</h3>
-            </div>
-          </article>
-          <article class="works__item works__item--lp" data-lp="works/007_grove/index.html" data-title="GROVE">
-            <div class="works__thumb">
-              <img src="phot/grove-hero.jpg" alt="GROVE LP" loading="lazy">
-              <div class="works__overlay"><span>LPを見る →</span></div>
-            </div>
-            <div class="works__info">
-              <p class="works__tag">SNS運用代行 / LP</p>
-              <h3 class="works__name">GROVE</h3>
-            </div>
-          </article>
+
+        <!-- 企業様向け -->
+        <div class="works__category">
+          <div class="works__category-head">
+            <h3 class="works__category-title">企業様向け</h3>
+            <p class="works__category-desc">集客・成約に特化したLP</p>
+          </div>
+          <div class="works__grid">
+            <article class="works__item works__item--lp" data-lp="works/nexora/20260604_ベンチャーLP_NEXORA.html" data-title="NEXORA">
+              <div class="works__thumb">
+                <img src="phot/nexora-hero.jpg" alt="NEXORA LP" loading="lazy">
+                <div class="works__overlay"><span>LPを見る →</span></div>
+              </div>
+              <div class="works__info">
+                <p class="works__tag">ベンチャー / LP</p>
+                <h3 class="works__name">NEXORA</h3>
+              </div>
+            </article>
+            <article class="works__item works__item--lp" data-lp="works/yasuragi/index.html" data-title="やすらぎの里">
+              <div class="works__thumb">
+                <img src="phot/yasuragi-hero.jpg" alt="やすらぎの里 LP" loading="lazy">
+                <div class="works__overlay"><span>LPを見る →</span></div>
+              </div>
+              <div class="works__info">
+                <p class="works__tag">介護施設 / LP</p>
+                <h3 class="works__name">やすらぎの里</h3>
+              </div>
+            </article>
+            <article class="works__item works__item--lp" data-lp="works/007_grove/index.html" data-title="GROVE">
+              <div class="works__thumb">
+                <img src="phot/grove-hero.jpg" alt="GROVE LP" loading="lazy">
+                <div class="works__overlay"><span>LPを見る →</span></div>
+              </div>
+              <div class="works__info">
+                <p class="works__tag">SNS運用代行 / LP</p>
+                <h3 class="works__name">GROVE</h3>
+              </div>
+            </article>
+          </div>
         </div>
-        <p class="works__hint">← スワイプでご覧いただけます →</p>
+
+        <!-- サロン様向け -->
+        <div class="works__category">
+          <div class="works__category-head">
+            <h3 class="works__category-title">サロン様向け</h3>
+            <p class="works__category-desc">世界観・デザイン重視のLP</p>
+          </div>
+          <div class="works__grid">
+            <article class="works__item works__item--lp" data-lp="works/eclat/index.html" data-title="pâtisserie éclat">
+              <div class="works__thumb">
+                <img src="phot/eclat-hero.jpg" alt="pâtisserie éclat LP" loading="lazy">
+                <div class="works__overlay"><span>LPを見る →</span></div>
+              </div>
+              <div class="works__info">
+                <p class="works__tag">パティスリー / LP</p>
+                <h3 class="works__name">pâtisserie éclat</h3>
+              </div>
+            </article>
+            <article class="works__item works__item--lp" data-lp="works/008_sole/index.html" data-title="SÖLE">
+              <div class="works__thumb">
+                <img src="phot/sole-hero.png" alt="SÖLE COFFEE &amp; SPACE LP" loading="lazy">
+                <div class="works__overlay"><span>LPを見る →</span></div>
+              </div>
+              <div class="works__info">
+                <p class="works__tag">カフェ / LP</p>
+                <h3 class="works__name">SÖLE</h3>
+              </div>
+            </article>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -319,6 +353,8 @@
     <iframe class="lp-viewer__frame" id="lpViewerFrame" src="" title="LP Preview" allowfullscreen></iframe>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js">
+
+</script>
 </body>
 </html>

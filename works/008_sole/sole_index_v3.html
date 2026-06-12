@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SÖLE COFFEE & SPACE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f7f4ef;
+      --bg-alt:   #faf8f5;
+      --text:     #2c2420;
+      --muted:    #8a7e76;
+      --border:   #e4ddd6;
+      --serif:    'Cormorant Garamond', 'Times New Roman', serif;
+      --sans:     'Noto Sans JP', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      -webkit-font-smoothing: antialiased;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      transition: background 0.4s, box-shadow 0.4s;
+    }
+    header.scrolled {
+      background: rgba(247, 244, 239, 0.92);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .logo { text-decoration: none; color: var(--text); }
+    .logo__name {
+      display: block;
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      line-height: 1;
+    }
+    .logo__sub {
+      display: block;
+      font-family: var(--serif);
+      font-size: 8px;
+      letter-spacing: 0.35em;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    nav { display: flex; align-items: center; gap: 36px; }
+    nav a {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-decoration: none;
+      color: var(--text);
+      transition: opacity 0.3s;
+    }
+    nav a:hover { opacity: 0.4; }
+
+    .nav__ig { display: flex; align-items: center; }
+    .nav__ig svg { width: 17px; height: 17px; stroke: var(--text); fill: none; stroke-width: 1.5; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--text);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    .nav__drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 190;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+    .nav__drawer.open { display: flex; }
+    .nav__drawer a {
+      font-family: var(--serif);
+      font-size: 28px;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    /* HERO desktop */
+    .hero {
+      height: 100vh;
+      min-height: 600px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero__img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(247,244,239,0.72) 35%, rgba(247,244,239,0.1) 75%, transparent 100%);
+    }
+    .hero__content {
+      position: absolute;
+      left: 10%;
+      bottom: 22%;
+    }
+    .hero__catch {
+      font-family: var(--sans);
+      font-size: clamp(30px, 4.2vw, 56px);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 44px;
+    }
+    .hero__btns { display: flex; gap: 14px; }
+    .btn {
+      display: inline-block;
+      padding: 12px 34px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      border: 1px solid var(--text);
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s;
+    }
+    .btn:hover { background: var(--text); color: var(--bg); }
+
+    /* COMMON SECTION */
+    .sec { padding: 110px 0; }
+    .sec--alt { background: var(--bg-alt); }
+
+    .sec__num {
+      font-family: var(--serif);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .sec__title {
+      font-family: var(--serif);
+      font-size: clamp(30px, 3.2vw, 46px);
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      margin-bottom: 28px;
+    }
+    .sec__body {
+      font-size: 13.5px;
+      line-height: 2.1;
+      color: var(--muted);
+      margin-bottom: 44px;
+    }
+    .view-more {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--text);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .view-more::after { content: '→'; }
+    .view-more:hover { opacity: 0.4; }
+
+    .inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* SPACE */
+    .space__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .space__photos {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 6px;
+      height: 420px;
+    }
+    .space__photo { overflow: hidden; min-height: 0; }
+    .space__photo--large { grid-row: 1 / 3; }
+    .space__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center center; }
+
+    /* MENU */
+    .menu__head {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0 24px;
+      margin-bottom: 60px;
+    }
+    .menu__sub { font-size: 12.5px; color: var(--muted); letter-spacing: 0.1em; }
+    .menu__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 28px;
+      margin-bottom: 52px;
+    }
+    .menu__photo { aspect-ratio: 1; overflow: hidden; margin-bottom: 16px; }
+    .menu__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    .menu__name { font-size: 13.5px; letter-spacing: 0.06em; margin-bottom: 8px; }
+    .menu__desc { font-size: 11.5px; line-height: 1.9; color: var(--muted); }
+
+    /* GALLERY */
+    .gallery__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 260px 260px;
+      gap: 6px;
+    }
+    .gallery__item { overflow: hidden; }
+    .gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .gallery__item:hover img { transform: scale(1.04); }
+    .gallery__item--wide { grid-column: span 2; }
+
+    /* NEWS */
+    .news__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 56px;
+    }
+    .news__item { border-top: 1px solid var(--border); padding-top: 24px; }
+    .news__date { font-family: var(--serif); font-size: 11px; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 10px; }
+    .news__tag { display: inline-block; font-size: 9px; letter-spacing: 0.2em; border: 1px solid var(--border); padding: 3px 10px; color: var(--muted); margin-bottom: 14px; }
+    .news__title { font-size: 13px; line-height: 1.8; letter-spacing: 0.04em; margin-bottom: 12px; }
+    .news__body { font-size: 11.5px; line-height: 1.9; color: var(--muted); }
+
+    /* ABOUT */
+    .about__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .about__photo { aspect-ratio: 4/5; overflow: hidden; }
+    .about__photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
+    /* ACCESS */
+    .access__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .access__info { display: flex; flex-direction: column; gap: 30px; margin-top: 8px; }
+    .access__row { display: flex; gap: 14px; align-items: flex-start; }
+    .access__icon { display: flex; align-items: flex-start; padding-top: 2px; }
+    .access__icon svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--muted); }
+    .access__label { font-size: 12.5px; line-height: 2; color: var(--muted); }
+    .access__label a { color: var(--muted); text-decoration: none; }
+    .access__label a:hover { opacity: 0.6; }
+    .access__map { aspect-ratio: 1; overflow: hidden; }
+    .access__map img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer__copy { font-family: var(--serif); font-size: 10px; letter-spacing: 0.2em; color: var(--muted); }
+    .footer__link { font-size: 10px; letter-spacing: 0.2em; color: var(--muted); text-decoration: none; }
+    .footer__link:hover { opacity: 0.6; }
+
+    /* FADE IN */
+    .fade { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .fade.visible { opacity: 1; transform: none; }
+    .fade-delay-1 { transition-delay: 0.15s; }
+    .fade-delay-2 { transition-delay: 0.3s; }
+    .fade-delay-3 { transition-delay: 0.45s; }
+
+    /* RESPONSIVE: tablet */
+    @media (max-width: 900px) {
+      header { padding: 18px 24px; }
+      nav { display: none; }
+      .hamburger { display: flex; }
+
+      .inner { padding: 0 24px; }
+      .sec { padding: 72px 0; }
+
+      /* hero mobile */
+      .hero { height: auto; min-height: 0; display: block; }
+      .hero__img { position: relative; inset: auto; width: 100vw; max-width: 100%; height: auto; object-fit: fill; }
+      .hero__overlay { display: none; }
+      .hero__content { position: relative; left: auto; bottom: auto; padding: 36px 24px 28px; background: var(--bg); }
+      .hero__catch { font-size: 28px; margin-bottom: 28px; }
+      .hero__btns { gap: 12px; }
+
+      .space__grid,
+      .about__grid,
+      .access__grid { grid-template-columns: 1fr; gap: 36px; }
+      .space__photos { order: -1; height: 320px; }
+
+      .menu__grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+      .menu__sub { display: none; }
+
+      .gallery__grid { grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px 200px; }
+      .gallery__item--wide { grid-column: span 2; }
+
+      .news__grid { grid-template-columns: 1fr; gap: 0; }
+      .news__item { padding: 20px 0; }
+
+      .about__photo { aspect-ratio: 3/2; }
+      .access__map { aspect-ratio: 4/3; }
+
+      footer { padding: 24px; flex-direction: column; gap: 10px; text-align: center; }
+    }
+
+    /* RESPONSIVE: small phone */
+    @media (max-width: 480px) {
+      .inner { padding: 0 20px; }
+      .sec { padding: 52px 0; }
+
+      .hero__content { padding: 28px 20px 24px; }
+      .hero__catch { font-size: 24px; margin-bottom: 24px; }
+
+      .space__photos { height: 240px; }
+
+      .menu__grid { gap: 16px; }
+      .menu__name { font-size: 12px; }
+      .menu__desc { font-size: 10.5px; }
+
+      .gallery__grid { grid-template-columns: 1fr; grid-template-rows: repeat(5, 220px); }
+      .gallery__item--wide { grid-column: 1; }
+
+      .news__grid { margin-top: 36px; }
+
+      .sec__title { font-size: 28px; }
+      .sec__body { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <a href="#top" class="logo">
+      <span class="logo__name">SÖLE</span>
+      <span class="logo__sub">COFFEE &amp; SPACE</span>
+    </a>
+    <nav>
+      <a href="#about">ABOUT</a>
+      <a href="#menu">MENU</a>
+      <a href="#space">SPACE</a>
+      <a href="#news">NEWS</a>
+      <a href="#access">ACCESS</a>
+      <a href="https://instagram.com/sole.coffee_space" target="_blank" rel="noopener" class="nav__ig" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="メニュー">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="nav__drawer" id="drawer">
+    <a href="#about" class="drawer__link">ABOUT</a>
+    <a href="#menu" class="drawer__link">MENU</a>
+    <a href="#space" class="drawer__link">SPACE</a>
+    <a href="#news" class="drawer__link">NEWS</a>
+    <a href="#access" class="drawer__link">ACCESS</a>
+  </div>
+
+  <section class="hero" id="top">
+    <picture>
+    <source media="(max-width: 900px)" srcset="photos/DA93F25C-AD0A-40A0-8BD4-FF1BBFEC6BCD.PNG">
+    <img src="photos/hero.jpg" class="hero__img" alt="SÖLE COFFEE &amp; SPACE">
+  </picture>
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <h1 class="hero__catch fade visible">日常に、<br>少しだけ余白を。</h1>
+      <div class="hero__btns fade visible fade-delay-1">
+        <a href="#menu" class="btn">MENU</a>
+        <a href="#access" class="btn">ACCESS</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--alt" id="space">
+    <div class="inner">
+      <div class="space__grid">
+        <div class="space__text fade">
+          <p class="sec__num">01</p>
+          <h2 class="sec__title">SPACE</h2>
+          <p class="sec__body">
+            白・ベージュ・グレーを基調に、<br>
+            木の温かみとやわらかな光が調和する空間。<br>
+            ひとりでも、誰かとでも、<br>
+            あなたの「ちょうどいい時間」を。
+          </p>
+          <a href="#" class="view-more">VIEW MORE</a>
+        </div>
+        <div class="space__photos fade fade-delay-1">
+          <div class="space__photo space__photo--large">
+            <img src="photos/space-1.jpg" alt="カフェ内観" loading="lazy">
+          </div>
+          <div class="space__photo">
+            <img src="photos/space-2.jpg" alt="カフェ内観" loading="lazy">
+          </div>
+          <div class="space__photo">
+            <img src="photos/space-3.jpg" alt="カフェ内観" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="menu">
+    <div class="inner">
+      <div class="menu__head fade">
+        <p class="sec__num">02</p>
+        <h2 class="sec__title">MENU</h2>
+        <span class="menu__sub">— こだわりのドリンクと、心ほどけるフード。</span>
+      </div>
+      <div class="menu__grid">
+        <div class="menu__item fade">
+          <div class="menu__photo"><img src="photos/menu-1.jpg" alt="ハニーカフェラテ" loading="lazy"></div>
+          <p class="menu__name">ハニーカフェラテ</p>
+          <p class="menu__desc">やさしい甘さに癒される<br>人気No.1ラテ</p>
+        </div>
+        <div class="menu__item fade fade-delay-1">
+          <div class="menu__photo"><img src="photos/menu-2.jpg" alt="固めプリン" loading="lazy"></div>
+          <p class="menu__name">固めプリン</p>
+          <p class="menu__desc">しっかり固めの食感と<br>ほろ苦カラメル</p>
+        </div>
+        <div class="menu__item fade fade-delay-2">
+          <div class="menu__photo"><img src="photos/menu-3.jpg" alt="バスクチーズケーキ" loading="lazy"></div>
+          <p class="menu__name">バスクチーズケーキ</p>
+          <p class="menu__desc">濃茶でなめらか、<br>定番の人気スイーツ</p>
+        </div>
+        <div class="menu__item fade fade-delay-3">
+          <div class="menu__photo"><img src="photos/menu-4.jpg" alt="クロワッサンサンド" loading="lazy"></div>
+          <p class="menu__name">クロワッサンサンド</p>
+          <p class="menu__desc">サクッと軽やか、<br>ランチにもおすすめ</p>
+        </div>
+      </div>
+      <a href="#" class="view-more fade">VIEW MORE</a>
+    </div>
+  </section>
+
+  <section class="sec sec--alt" id="gallery">
+    <div class="inner">
+      <div class="fade" style="margin-bottom:52px;">
+        <p class="sec__num">03</p>
+        <h2 class="sec__title">GALLERY</h2>
+      </div>
+      <div class="gallery__grid">
+        <div class="gallery__item gallery__item--wide fade">
+          <img src="photos/hero.jpg" alt="カフェ内観" loading="lazy">
+        </div>
+        <div class="gallery__item fade fade-delay-1">
+          <img src="photos/space-1.jpg" alt="カフェ内観" loading="lazy">
+        </div>
+        <div class="gallery__item fade">
+          <img src="photos/space-2.jpg" alt="カフェ内観" loading="lazy">
+        </div>
+        <div class="gallery__item fade fade-delay-1">
+          <img src="photos/menu-1.jpg" alt="ドリンク" loading="lazy">
+        </div>
+        <div class="gallery__item fade fade-delay-2">
+          <img src="photos/menu-3.jpg" alt="スイーツ" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--alt" id="about">
+    <div class="inner">
+      <div class="about__grid">
+        <div class="about__text fade">
+          <p class="sec__num">04</p>
+          <h2 class="sec__title">ABOUT</h2>
+          <p class="sec__body">
+            SÖLE（ソーレ）は、<br>
+            「日常の余白」をテーマにしたカフェです。<br><br>
+            忙しい毎日の中で、ふっと息の力を抜ける場所をつくりたくて、<br>
+            この空間をつくりました。<br><br>
+            ひとりでも、誰かとでも、作業でもおしゃべりでも、<br>
+            あなたにとっての「ちょうどいい時間」が、<br>
+            ここにありますように。
+          </p>
+          <a href="#" class="view-more">VIEW MORE</a>
+        </div>
+        <div class="about__photo fade fade-delay-1">
+          <img src="photos/about.jpg" alt="店内の様子" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec sec--alt" id="news">
+    <div class="inner">
+      <div class="fade">
+        <p class="sec__num">05</p>
+        <h2 class="sec__title">NEWS</h2>
+      </div>
+      <div class="news__grid">
+        <div class="news__item fade">
+          <p class="news__date">2025.06.01</p>
+          <span class="news__tag">NEW MENU</span>
+          <p class="news__title">夏季限定「アイスほうじ茶ラテ」登場</p>
+          <p class="news__body">ほのかに香ばしく、すっきりとした飲み口。暑い季節にぴったりの新作ドリンクをご用意しました。</p>
+        </div>
+        <div class="news__item fade fade-delay-1">
+          <p class="news__date">2025.05.15</p>
+          <span class="news__tag">EVENT</span>
+          <p class="news__title">マルシェ出店のお知らせ</p>
+          <p class="news__body">5月25日（日）、代々木公園マルシェにSÖLEが出店します。焼き菓子とドリップコーヒーをお持ちします。</p>
+        </div>
+        <div class="news__item fade fade-delay-2">
+          <p class="news__date">2025.04.01</p>
+          <span class="news__tag">INFO</span>
+          <p class="news__title">春の営業時間変更のご案内</p>
+          <p class="news__body">4月より土日の営業時間を8:00 OPENに変更いたします。朝の時間をSÖLEで始めてみませんか。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="access">
+    <div class="inner">
+      <div class="access__grid">
+        <div class="fade">
+          <p class="sec__num">06</p>
+          <h2 class="sec__title">ACCESS</h2>
+          <div class="access__info">
+            <div class="access__row">
+              <span class="access__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21C12 21 5 13.5 5 9a7 7 0 1 1 14 0c0 4.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+              </span>
+              <p class="access__label">
+                SÖLE（ソーレ）<br>
+                〒150-0001 東京都渋谷区神宮前1-2-3 SOLEビル 2F
+              </p>
+            </div>
+            <div class="access__row">
+              <span class="access__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 12"/></svg>
+              </span>
+              <p class="access__label">
+                営業時間<br>
+                9:00 – 20:00（L.O. 19:30）<br>
+                定休日：火曜日
+              </p>
+            </div>
+            <div class="access__row">
+              <span class="access__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              </span>
+              <p class="access__label">
+                Instagram<br>
+                <a href="https://instagram.com/sole.coffee_space" target="_blank" rel="noopener">@sole.coffee_space</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="access__map fade fade-delay-1">
+          <img src="photos/map.jpg" alt="アクセスマップ" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="footer__copy">© 2025 SÖLE COFFEE &amp; SPACE</p>
+    <a href="#" class="footer__link">PRIVACY POLICY</a>
+  </footer>
+
+  <script>
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    const hamburger = document.getElementById('hamburger');
+    const drawer = document.getElementById('drawer');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      drawer.classList.toggle('open');
+    });
+    drawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        drawer.classList.remove('open');
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
