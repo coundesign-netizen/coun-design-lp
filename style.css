@@ -856,6 +856,7 @@ ul, ol { list-style: none; }
 
   .section__en { font-size: 8px; }
   .section__title { font-size: clamp(16px, 4vw, 20px); }
+  .section__desc { font-size: 11px; }
 
   .about__values { grid-template-columns: 1fr; }
   .about__intro { font-size: 10px; }
@@ -866,6 +867,12 @@ ul, ol { list-style: none; }
 
   .flow__step { font-size: 11px; }
   .flow__desc { font-size: 10px; }
+
+  .contact__line-lead { font-size: 13px; }
+  .contact__line-note { font-size: 10px; }
+
+  .works__item-title { font-size: 11px; }
+  .works__item-type { font-size: 9px; }
 
   .works__grid, .works__grid--2col, .works__grid--3col {
     display: flex; flex-direction: row;
